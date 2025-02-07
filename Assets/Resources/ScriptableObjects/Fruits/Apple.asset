@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e41aa1a53c5542f7a4ba31075c6bbbf8, type: 3}
+  m_Name: Apple
+  m_EditorClassIdentifier: 
+  tileType: 0
+  id: Apple
+  sprite: {fileID: 21300000, guid: b7481a4c424715542a70ac1efc7468db, type: 3}
+  score: 10
