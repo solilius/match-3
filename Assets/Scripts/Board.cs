@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class Board : MonoBehaviour
 {
+    public static event Action<Vector2, Vector2> OnSwitchPosition;
+    
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private float dragDistance = .5f;
 
@@ -32,9 +34,9 @@ public class Board : MonoBehaviour
         Vector2 draggedPosition = new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
         if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
-            TileSO firstTile = boardGrid[_selectedTilePosition.x, _selectedTilePosition.y];
-            TileSO secondTile = boardGrid[draggedGridPosition.x, draggedGridPosition.y];
-            Debug.Log($"{firstTile.id} -> {secondTile.id}");
+            Debug.Log("Move");
+            OnSwitchPosition?.Invoke(_selectedTilePosition, direction);
+            OnSwitchPosition?.Invoke(draggedPosition, direction * -1);
         }
         else
         {
@@ -105,7 +107,7 @@ public class Board : MonoBehaviour
         return new Vector2(worldPosition.x, -worldPosition.y);
     }
 
-    private Vector3 CalcTilePosition(int x, int y)
+    private Vector3 CalcTilePosition(float x, float y)
     {
         // Make the spawn at top left instead of center
         // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
