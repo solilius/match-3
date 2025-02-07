@@ -29,7 +29,7 @@ public class Board : MonoBehaviour
 
         Vector2 direction = GetDirection(_startDragPosition, currentPosition);
 
-        Vector2 draggedPosition = new Vector2(_selectedTilePosition.x + direction.x, -_selectedTilePosition.y + direction.y);
+        Vector2 draggedPosition = new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
         if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
             TileSO firstTile = boardGrid[_selectedTilePosition.x, _selectedTilePosition.y];
@@ -73,13 +73,12 @@ public class Board : MonoBehaviour
     private bool IsWithinGrid(Vector2 position, out Vector2Int gridPosition)
     {
         int x = Mathf.FloorToInt(position.x);
-        int y = Mathf.FloorToInt(position.y * -1); // To correct to grid values
+        int y = Mathf.FloorToInt(position.y);
         gridPosition = new Vector2Int(x, y);
 
         return x >= 0 && x < boardGrid.GetLength(0) && y >= 0 && y < boardGrid.GetLength(1);
     }
-
-
+    
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)
     {
         return _isDragging && Vector2.Distance(startPosition, endPosition) >= dragDistance;
@@ -103,8 +102,7 @@ public class Board : MonoBehaviour
     private Vector2 GetMouseWorldPosition()
     {
         Vector2 worldPosition= Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return new Vector2(worldPosition.x, worldPosition.y);
-        // return Camera.main.ScreenToWorldPoint(screenPosition);
+        return new Vector2(worldPosition.x, -worldPosition.y);
     }
 
     private Vector3 CalcTilePosition(int x, int y)
