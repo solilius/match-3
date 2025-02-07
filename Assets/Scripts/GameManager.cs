@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     private TileSO[,] TempInit()
     {
         TileSO[,] grid = new TileSO[6, 6];
-        string[] tileIds = { "Banana", "Apple", "Grape" };
+        string[] tileIds = { "Banana", "Apple", "Grape", "Pear" };
 
         for (int row = 0; row < 6; row++)
         {

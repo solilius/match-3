@@ -14,12 +14,12 @@ public class Tile : MonoBehaviour
     
     void OnEnable()
     {
-        Board.OnSwitchPosition += MoveTile;
+        SwapTiles.OnSwitchPosition += MoveTile;
     }
 
     void OnDisable()
     {
-        Board.OnSwitchPosition -= MoveTile;
+        SwapTiles.OnSwitchPosition -= MoveTile;
     }
 
     public void Initialize(TileSO data, int x, int y)
