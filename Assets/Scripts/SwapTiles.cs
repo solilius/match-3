@@ -19,15 +19,15 @@ public class SwapTiles : MonoBehaviour
 
     [SerializeField] private float dragDistance = .5f;
 
-    private Board board;
+    private Board _board;
 
     private bool _isDragging;
     private Vector2 _startDragPosition;
     private Vector2Int _selectedTilePosition;
 
-    void Awake()
+    void Start()
     {
-        board = GetComponent<Board>();
+        _board = GetComponent<Board>();
     }
 
     void Update()
@@ -52,8 +52,6 @@ public class SwapTiles : MonoBehaviour
         {
             HandleSwap(currentPosition);
         }
-
-        ;
     }
 
     private void HandleSwap(Vector2 currentPosition)
@@ -89,7 +87,7 @@ public class SwapTiles : MonoBehaviour
         int y = Mathf.FloorToInt(position.y);
         gridPosition = new Vector2Int(x, y);
 
-        return x >= 0 && x < board.BoardGrid.GetLength(0) && y >= 0 && y < board.BoardGrid.GetLength(1);
+        return _board.IsInGrid(x, y);
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)
@@ -97,7 +95,7 @@ public class SwapTiles : MonoBehaviour
         return _isDragging && Vector2.Distance(startPosition, endPosition) >= dragDistance;
     }
 
-    private Vector2 GetMouseWorldPosition()
+    private static Vector2 GetMouseWorldPosition()
     {
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         return new Vector2(worldPosition.x, -worldPosition.y);

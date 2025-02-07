@@ -1,8 +1,11 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    public static event EventHandler<Vector2Int> OnTileMoved;
+
     [SerializeField] private SpriteRenderer tileSprite;
     [SerializeField] private float swapDuration = .5f;
 
@@ -33,15 +36,14 @@ public class Tile : MonoBehaviour
 
     private void MoveTile(object sender, SwitchPositionEventArgs e)
     {
-        if (!_isSwapping && e.Position.x == _x && e.Position.y == _y)
+        if (e.Position.x == _x && e.Position.y == _y)
         {
-            _isSwapping = true;
             Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, -e.Direction.y, 0f);
 
             transform.DOMove(targetPosition, swapDuration).OnComplete(() =>
             {
-                _isSwapping = false;
                 SetPosition(_x + e.Direction.x, _y + e.Direction.y);
+                OnTileMoved?.Invoke(this, Vector2Int.RoundToInt(targetPosition));
             });
         }
     }
