@@ -11,7 +11,7 @@ public class Board : MonoBehaviour
 
     private bool _isDragging;
     private Vector3 _startDragPosition;
-    private Vector2 _selectedTilePosition;
+    private Vector2Int _selectedTilePosition;
 
     public void Initialize(TilesCatalog catalog, TileSO[,] grid)
     {
@@ -19,29 +19,42 @@ public class Board : MonoBehaviour
         SetBoard(grid);
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector3 currentPosition = GetMouseWorldPosition();
+        SetSelectedTile(currentPosition);
 
-        if (Input.GetMouseButtonDown(0) && !_isDragging)
+        if (Input.GetMouseButtonUp(0)) _isDragging = false;
+        if (!IsValidDrag(_startDragPosition, currentPosition)) return;
+
+        Vector3 direction = GetDirection(_startDragPosition, currentPosition);
+
+        Vector3 draggedPosition = new Vector3(_selectedTilePosition.x + direction.x, -_selectedTilePosition.y + direction.y, 0f);
+        if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
-            _isDragging = true;
-            if (IsWithinGrid(currentPosition))
-            {
-                _startDragPosition = currentPosition;
-            }
+            TileSO firstTile = boardGrid[_selectedTilePosition.x, _selectedTilePosition.y];
+            TileSO secondTile = boardGrid[draggedGridPosition.x, draggedGridPosition.y];
+            Debug.Log($"{firstTile.id} -> {secondTile.id}");
+        }
+        else
+        {
+            Debug.Log($" Out: {_selectedTilePosition} -> {draggedGridPosition}");
         }
         
-        if (Input.GetMouseButtonUp(0)) _isDragging = false;
+        _isDragging = false;
+    }
 
-        if (_isDragging && IsValidDrag(_startDragPosition, currentPosition))
+    private void SetSelectedTile(Vector3 currentPosition)
+    {
+        if (!_isDragging && Input.GetMouseButtonDown(0))
         {
-            Vector3 direction = GetDirection(_startDragPosition, currentPosition);
-            TileSO firstTile = boardGrid[Mathf.FloorToInt(_startDragPosition.x), Mathf.FloorToInt(-_startDragPosition.y)];
-            TileSO secondTile = boardGrid[Mathf.FloorToInt(_startDragPosition.x) + (int)direction.x, Mathf.FloorToInt(-_startDragPosition.y) - (int)direction.y];
-            Debug.Log($"{firstTile.id} -> {secondTile.id}");
-            _isDragging = false;
+            _isDragging = true;
+
+            if (IsWithinGrid(currentPosition, out Vector2Int gridPosition))
+            {
+                _startDragPosition = currentPosition;
+                _selectedTilePosition = gridPosition;
+            }
         }
     }
 
@@ -57,23 +70,19 @@ public class Board : MonoBehaviour
         return diff.y > 0 ? Vector3.up : Vector3.down;
     }
 
-    private bool IsWithinGrid(Vector3 position)
+    private bool IsWithinGrid(Vector3 position, out Vector2Int gridPosition)
     {
         int x = Mathf.FloorToInt(position.x);
         int y = Mathf.FloorToInt(position.y * -1); // To correct to grid values
+        gridPosition = new Vector2Int(x, y);
+
         return x >= 0 && x < boardGrid.GetLength(0) && y >= 0 && y < boardGrid.GetLength(1);
     }
 
+
     private bool IsValidDrag(Vector3 startPosition, Vector3 endPosition)
     {
-        if (
-            startPosition == endPosition
-            || Vector3.Distance(startPosition, Input.mousePosition) < dragDistance
-            || !IsWithinGrid(startPosition)
-            || !IsWithinGrid(endPosition)
-        ) return false;
-
-        return true;
+        return _isDragging && Vector3.Distance(startPosition, endPosition) >= dragDistance;
     }
 
     private void SetBoard(TileSO[,] grid)
