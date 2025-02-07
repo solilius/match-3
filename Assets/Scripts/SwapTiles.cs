@@ -1,9 +1,21 @@
 using System;
 using UnityEngine;
 
+public class SwitchPositionEventArgs : EventArgs
+{
+    public Vector2Int Position { get; }
+    public Vector2Int Direction { get; }
+
+    public SwitchPositionEventArgs(Vector2Int position, Vector2 direction)
+    {
+        Position = position;
+        Direction = Vector2Int.RoundToInt(direction);
+    }
+}
+
 public class SwapTiles : MonoBehaviour
 {
-    public static event Action<Vector2, Vector2> OnSwitchPosition;
+    public static event EventHandler<SwitchPositionEventArgs> OnSwitchPosition;
 
     [SerializeField] private float dragDistance = .5f;
 
@@ -26,7 +38,7 @@ public class SwapTiles : MonoBehaviour
     private void HandleDragging()
     {
         if (Input.GetMouseButtonUp(0)) _isDragging = false;
-        
+
         Vector2 currentPosition = GetMouseWorldPosition();
 
         if (!_isDragging && Input.GetMouseButtonDown(0) && IsWithinGrid(currentPosition, out Vector2Int gridPosition))
@@ -39,7 +51,9 @@ public class SwapTiles : MonoBehaviour
         if (IsValidDrag(_startDragPosition, currentPosition))
         {
             HandleSwap(currentPosition);
-        };
+        }
+
+        ;
     }
 
     private void HandleSwap(Vector2 currentPosition)
@@ -50,8 +64,8 @@ public class SwapTiles : MonoBehaviour
             new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
         if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
-            OnSwitchPosition?.Invoke(_selectedTilePosition, direction);
-            OnSwitchPosition?.Invoke(draggedGridPosition, direction * -1);
+            OnSwitchPosition?.Invoke(this, new SwitchPositionEventArgs(_selectedTilePosition, direction));
+            OnSwitchPosition?.Invoke(this, new SwitchPositionEventArgs(draggedGridPosition, direction * -1));
         }
 
         _isDragging = false;

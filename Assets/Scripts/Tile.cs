@@ -6,9 +6,8 @@ public class Tile : MonoBehaviour
     [SerializeField] private SpriteRenderer tileSprite;
     [SerializeField] private float swapDuration = .5f;
 
-    private TileSO _data;
-    private float _x;
-    private float _y;
+    private int _x;
+    private int _y;
 
     private bool _isSwapping;
 
@@ -24,7 +23,6 @@ public class Tile : MonoBehaviour
 
     public void Initialize(TileSO data, int x, int y)
     {
-        _data = data;
         SetPosition(x, y);
 
         if (tileSprite != null && data.sprite != null)
@@ -33,22 +31,22 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void MoveTile(Vector2 from, Vector2 direction)
+    private void MoveTile(object sender, SwitchPositionEventArgs e)
     {
-        if (!_isSwapping && from.x == _x && from.y == _y)
+        if (!_isSwapping && e.Position.x == _x && e.Position.y == _y)
         {
             _isSwapping = true;
-            Vector3 targetPosition = transform.position + new Vector3(direction.x, -direction.y, 0f);
-            
+            Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, -e.Direction.y, 0f);
+
             transform.DOMove(targetPosition, swapDuration).OnComplete(() =>
             {
                 _isSwapping = false;
-                SetPosition(_x + direction.x, _y + direction.y);
+                SetPosition(_x + e.Direction.x, _y + e.Direction.y);
             });
         }
     }
 
-    private void SetPosition(float x, float y)
+    private void SetPosition(int x, int y)
     {
         _x = x;
         _y = y;
