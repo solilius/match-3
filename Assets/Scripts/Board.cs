@@ -4,7 +4,7 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     public static event Action<Vector2, Vector2> OnSwitchPosition;
-    
+
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private float dragDistance = .5f;
 
@@ -24,40 +24,28 @@ public class Board : MonoBehaviour
     void Update()
     {
         Vector2 currentPosition = GetMouseWorldPosition();
-        SetSelectedTile(currentPosition);
+
+        if (!_isDragging && Input.GetMouseButtonDown(0) && IsWithinGrid(currentPosition, out Vector2Int gridPosition))
+        {
+            _isDragging = true;
+            _startDragPosition = currentPosition;
+            _selectedTilePosition = gridPosition;
+        }
 
         if (Input.GetMouseButtonUp(0)) _isDragging = false;
         if (!IsValidDrag(_startDragPosition, currentPosition)) return;
 
         Vector2 direction = GetDirection(_startDragPosition, currentPosition);
 
-        Vector2 draggedPosition = new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
+        Vector2 draggedPosition =
+            new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
         if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
-            Debug.Log("Move");
             OnSwitchPosition?.Invoke(_selectedTilePosition, direction);
-            OnSwitchPosition?.Invoke(draggedPosition, direction * -1);
+            OnSwitchPosition?.Invoke(draggedGridPosition, direction * -1);
         }
-        else
-        {
-            Debug.Log($" Out: {_selectedTilePosition} -> {draggedGridPosition}");
-        }
-        
+
         _isDragging = false;
-    }
-
-    private void SetSelectedTile(Vector2 currentPosition)
-    {
-        if (!_isDragging && Input.GetMouseButtonDown(0))
-        {
-            _isDragging = true;
-
-            if (IsWithinGrid(currentPosition, out Vector2Int gridPosition))
-            {
-                _startDragPosition = currentPosition;
-                _selectedTilePosition = gridPosition;
-            }
-        }
     }
 
     private static Vector2 GetDirection(Vector2 from, Vector2 to)
@@ -80,7 +68,7 @@ public class Board : MonoBehaviour
 
         return x >= 0 && x < boardGrid.GetLength(0) && y >= 0 && y < boardGrid.GetLength(1);
     }
-    
+
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)
     {
         return _isDragging && Vector2.Distance(startPosition, endPosition) >= dragDistance;
@@ -103,7 +91,7 @@ public class Board : MonoBehaviour
 
     private Vector2 GetMouseWorldPosition()
     {
-        Vector2 worldPosition= Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         return new Vector2(worldPosition.x, -worldPosition.y);
     }
 

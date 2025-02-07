@@ -38,7 +38,6 @@ public class Tile : MonoBehaviour
         if (!_isSwaping && from.x == _x && from.y == _y)
         {
             _isSwaping = true;
-            Debug.Log($"from:{from} direction:{direction} id: {_data.id}");
             
             Vector2 targetPosition = transform.position + new Vector3(direction.x, -direction.y, 0f);
             StartCoroutine(MoveToDirection(targetPosition));
