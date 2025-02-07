@@ -1,17 +1,17 @@
-using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
-    [SerializeField] private float swapSpeed = 10f;
+    [SerializeField] private float swapDuration = .5f;
 
     private TileSO _data;
     private float _x;
     private float _y;
-    
-    private bool _isSwaping;
-    
+
+    private bool _isSwapping;
+
     void OnEnable()
     {
         SwapTiles.OnSwitchPosition += MoveTile;
@@ -35,32 +35,17 @@ public class Tile : MonoBehaviour
 
     private void MoveTile(Vector2 from, Vector2 direction)
     {
-        if (!_isSwaping && from.x == _x && from.y == _y)
+        if (!_isSwapping && from.x == _x && from.y == _y)
         {
-            _isSwaping = true;
+            _isSwapping = true;
+            Vector3 targetPosition = transform.position + new Vector3(direction.x, -direction.y, 0f);
             
-            Vector2 targetPosition = transform.position + new Vector3(direction.x, -direction.y, 0f);
-            StartCoroutine(MoveToDirection(targetPosition));
-            SetPosition(_x + direction.x, _y + direction.y);
+            transform.DOMove(targetPosition, swapDuration).OnComplete(() =>
+            {
+                _isSwapping = false;
+                SetPosition(_x + direction.x, _y + direction.y);
+            });
         }
-    }
-
-    private IEnumerator MoveToDirection(Vector2 target)
-    {
-        Vector2 startPosition = transform.position;
-        float distance = Vector2.Distance(startPosition, target);
-        float startTime = Time.time;
-
-        while (Vector2.Distance(transform.position, target) > 0.01f)
-        {
-            float elapsedTime = Time.time - startTime;
-            float fraction = elapsedTime * swapSpeed / distance;
-            transform.position = Vector2.Lerp(startPosition, target, fraction);
-            yield return null;
-        }
-
-        transform.position = target;
-        _isSwaping = false;
     }
 
     private void SetPosition(float x, float y)

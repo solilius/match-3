@@ -15,4 +15,4 @@ MonoBehaviour:
   tileType: 0
   id: Pear
   sprite: {fileID: 21300000, guid: 50dd2e8acaa7426438d693e39eb73026, type: 3}
-  score: 0
+  score: 10

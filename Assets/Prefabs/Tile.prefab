@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSprite: {fileID: 4655688061774127576}
-  swapSpeed: 10
+  swapDuration: 0.2
 --- !u!1 &8686670404479420172
 GameObject:
   m_ObjectHideFlags: 0
