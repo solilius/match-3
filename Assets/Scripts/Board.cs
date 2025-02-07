@@ -76,7 +76,7 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < boardGrid.GetLength(1); y++)
             {
-                GameObject tile = Instantiate(tilePrefab, new Vector3(x, -y, 0), Quaternion.identity);
+                GameObject tile = Instantiate(tilePrefab, CalcTilePosition(x, y), Quaternion.identity);
                 TileSO tileData = tileCatalog.GetTile(boardGrid[x, y].id);
                 tile.GetComponent<Tile>().Initialize(tileData, x, y);
             }
@@ -88,5 +88,12 @@ public class Board : MonoBehaviour
         Vector3 screenPosition = Input.mousePosition;
         screenPosition.z = Camera.main.nearClipPlane;
         return Camera.main.ScreenToWorldPoint(screenPosition);
+    }
+
+    private Vector3 CalcTilePosition(int x, int y)
+    {
+        // Make the spawn at top left instead of center
+        // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
+        return new Vector3(x, -y, 0f) + new Vector3(0.5f, -0.5f, 0f); 
     }
 }
