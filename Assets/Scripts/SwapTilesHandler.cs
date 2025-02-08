@@ -1,33 +1,40 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SwitchPositionEventArgs : EventArgs
 {
     public Vector2Int Position { get; }
     public Vector2Int Direction { get; }
+    public float Duration { get; }
 
-    public SwitchPositionEventArgs(Vector2Int position, Vector2 direction)
+    public SwitchPositionEventArgs(Vector2Int position, Vector2 direction, float duration)
     {
         Position = position;
         Direction = Vector2Int.RoundToInt(direction);
+        Duration = duration;
     }
 }
 
-public class SwapTiles : MonoBehaviour
+public class SwapTilesHandler : MonoBehaviour
 {
     public static event EventHandler<SwitchPositionEventArgs> OnSwitchPosition;
 
     [SerializeField] private float dragDistance = .5f;
+    [SerializeField] private float swapDuration = .5f;
 
     private Board _board;
+    private MatchHandler _matchHandler;
 
     private bool _isDragging;
     private Vector2 _startDragPosition;
-    private Vector2Int _selectedTilePosition;
+    private Vector2Int _selectedTilePos;
 
     void Start()
     {
         _board = GetComponent<Board>();
+        _matchHandler = GetComponent<MatchHandler>();
     }
 
     void Update()
@@ -45,7 +52,7 @@ public class SwapTiles : MonoBehaviour
         {
             _isDragging = true;
             _startDragPosition = currentPosition;
-            _selectedTilePosition = gridPosition;
+            _selectedTilePos = gridPosition;
         }
 
         if (IsValidDrag(_startDragPosition, currentPosition))
@@ -59,14 +66,43 @@ public class SwapTiles : MonoBehaviour
         Vector2 direction = GetDirection(_startDragPosition, currentPosition);
 
         Vector2 draggedPosition =
-            new Vector2(_selectedTilePosition.x + direction.x, _selectedTilePosition.y + direction.y);
+            new Vector2(_selectedTilePos.x + direction.x, _selectedTilePos.y + direction.y);
         if (IsWithinGrid(draggedPosition, out Vector2Int draggedGridPosition))
         {
-            OnSwitchPosition?.Invoke(this, new SwitchPositionEventArgs(_selectedTilePosition, direction));
-            OnSwitchPosition?.Invoke(this, new SwitchPositionEventArgs(draggedGridPosition, direction * -1));
+            StartCoroutine(SwapTiles(draggedGridPosition, direction));
         }
 
         _isDragging = false;
+    }
+
+    private IEnumerator SwapTiles(Vector2Int draggedGridPosition, Vector2 direction)
+    {
+        SwitchPositionEventArgs argsA = new SwitchPositionEventArgs(_selectedTilePos, direction, swapDuration);
+        SwitchPositionEventArgs argsB = new SwitchPositionEventArgs(draggedGridPosition, direction * -1, swapDuration);
+        _board.SwitchTiles(_selectedTilePos, draggedGridPosition);
+
+        OnSwitchPosition?.Invoke(this, argsA);
+        OnSwitchPosition?.Invoke(this, argsB);
+
+        yield return new WaitForSeconds(swapDuration); // swap back without delay
+
+        List<Vector2Int> matches = new List<Vector2Int>();
+
+        matches.AddRange(_matchHandler.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y].id,
+            _selectedTilePos));
+        matches.AddRange(_matchHandler.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y].id,
+            draggedGridPosition));
+
+        if (matches.Count == 0)
+        {
+            _board.SwitchTiles(draggedGridPosition, _selectedTilePos);
+            OnSwitchPosition?.Invoke(this, argsA);
+            OnSwitchPosition?.Invoke(this, argsB);
+        }
+        else
+        {
+            _matchHandler.HandleMatches(matches);
+        }
     }
 
     private static Vector2 GetDirection(Vector2 from, Vector2 to)

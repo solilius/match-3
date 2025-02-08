@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public static event EventHandler<Vector2Int> OnTileMoved;
-
     [SerializeField] private SpriteRenderer tileSprite;
-    [SerializeField] private float swapDuration = .5f;
-
+    private string id;
     private int _x;
     private int _y;
 
@@ -16,18 +13,20 @@ public class Tile : MonoBehaviour
 
     void OnEnable()
     {
-        SwapTiles.OnSwitchPosition += MoveTile;
+        SwapTilesHandler.OnSwitchPosition += MoveTile;
+        MatchHandler.OnMatched += OnMatch;
     }
 
     void OnDisable()
     {
-        SwapTiles.OnSwitchPosition -= MoveTile;
+        SwapTilesHandler.OnSwitchPosition -= MoveTile;
+        MatchHandler.OnMatched -= OnMatch;
     }
 
     public void Initialize(TileSO data, int x, int y)
     {
         SetPosition(x, y);
-
+        id = data.id;
         if (tileSprite != null && data.sprite != null)
         {
             tileSprite.sprite = data.sprite;
@@ -40,14 +39,23 @@ public class Tile : MonoBehaviour
         {
             Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, -e.Direction.y, 0f);
 
-            transform.DOMove(targetPosition, swapDuration).OnComplete(() =>
+            transform.DOMove(targetPosition, e.Duration).OnComplete(() =>
             {
                 SetPosition(_x + e.Direction.x, _y + e.Direction.y);
-                OnTileMoved?.Invoke(this, Vector2Int.RoundToInt(targetPosition));
             });
         }
     }
 
+    private void OnMatch(object sender, Vector2Int e)
+    {
+        if (e.x == _x && e.y == _y)
+        {
+            transform.DOScale(0.01f, 0.3f).OnComplete(() =>
+            {
+                Destroy(gameObject);
+            });
+        }
+    }
     private void SetPosition(int x, int y)
     {
         _x = x;

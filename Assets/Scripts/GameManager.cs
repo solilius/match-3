@@ -19,12 +19,14 @@ public class GameManager : MonoBehaviour
     
     private TileSO[,] TempInit()
     {
-        TileSO[,] grid = new TileSO[6, 6];
-        string[] tileIds = { "Banana", "Apple", "Grape", "Pear" };
+        int rows = 6;
+        int cols = 6;
+        TileSO[,] grid = new TileSO[rows, cols];
+        string[] tileIds = { "Banana", "Apple", "Pear", "Grape" };
 
-        for (int row = 0; row < 6; row++)
+        for (int row = 0; row < rows; row++)
         {
-            for (int col = 0; col < 6; col++)
+            for (int col = 0; col < cols; col++)
             {
                 string randomId = tileIds[UnityEngine.Random.Range(0, tileIds.Length)];
                 grid[row, col] = tileCatalog.GetTile(randomId);

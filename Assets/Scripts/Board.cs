@@ -20,6 +20,12 @@ public class Board : MonoBehaviour
                x >= 0 && x < BoardGrid.GetLength(0) &&
                y >= 0 && y < BoardGrid.GetLength(1);
     }
+
+    public void SwitchTiles(Vector2Int tileA, Vector2Int tileB)
+    {
+        (BoardGrid[tileA.x, tileA.y], BoardGrid[tileB.x, tileB.y]) = 
+            (BoardGrid[tileB.x, tileB.y], BoardGrid[tileA.x, tileA.y]);
+    }
     
     private void SetBoard(TileSO[,] grid)
     {
