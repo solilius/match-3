@@ -26,6 +26,22 @@ public class Board : MonoBehaviour
         (BoardGrid[tileA.x, tileA.y], BoardGrid[tileB.x, tileB.y]) = 
             (BoardGrid[tileB.x, tileB.y], BoardGrid[tileA.x, tileA.y]);
     }
+
+    public void RemoveTile(Vector2Int tile)
+    {
+        BoardGrid[tile.x, tile.y] = null;
+    }
+    
+    public int GetScore(Vector2Int tile)
+    {
+        return ((FruitSO)BoardGrid[tile.x, tile.y])?.score ?? 0;
+    }
+    
+    public void UpdateTile(Vector2Int tilePos, Vector2Int newTilePos )
+    {   
+        BoardGrid[newTilePos.x, newTilePos.y] = BoardGrid[tilePos.x, tilePos.y];
+        BoardGrid[tilePos.x, tilePos.y] = null;
+    }
     
     private void SetBoard(TileSO[,] grid)
     {
@@ -46,6 +62,6 @@ public class Board : MonoBehaviour
     {
         // Make the spawn at top left instead of center
         // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
-        return new Vector3(x, -y, 0f) + new Vector3(0.5f, -0.5f, 0f);
+        return new Vector3(x, y, 0f) + new Vector3(0.5f, -0.5f, 0f);
     }
 }

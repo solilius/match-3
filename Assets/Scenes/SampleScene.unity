@@ -250,7 +250,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: -3, z: -10}
+  m_LocalPosition: {x: 3, y: 1.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -353,6 +353,7 @@ GameObject:
   - component: {fileID: 1159368773}
   - component: {fileID: 1159368774}
   - component: {fileID: 1159368775}
+  - component: {fileID: 1159368776}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -424,7 +425,7 @@ Transform:
   m_GameObject: {fileID: 1159368770}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.006, y: -3.034, z: 0}
+  m_LocalPosition: {x: 3.006, y: 1.976, z: 0}
   m_LocalScale: {x: 0.87, y: 0.87, z: 0.87}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -456,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragDistance: 0.5
-  swapDuration: 0.3
+  swapDuration: 0.15
 --- !u!114 &1159368775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,6 +471,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minimumMatch: 3
+--- !u!114 &1159368776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159368770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc480921bc29c564d9ffd176b38a8265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  removeTileDuration: 0.15
+  fallDuration: 0.1
 --- !u!1 &1602138548
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +566,7 @@ Transform:
   m_GameObject: {fileID: 1602138548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: -3, z: 0}
+  m_LocalPosition: {x: 3, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

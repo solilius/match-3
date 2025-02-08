@@ -1,25 +1,28 @@
 using System;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
+    [SerializeField] private TMP_Text textPos;
+    
     private string id;
     private int _x;
     private int _y;
-
+    
     private bool _isSwapping;
 
     void OnEnable()
     {
-        SwapTilesHandler.OnSwitchPosition += MoveTile;
+        TileEvents.OnUpdateTilePosition += MoveTile;
         MatchHandler.OnMatched += OnMatch;
     }
 
     void OnDisable()
     {
-        SwapTilesHandler.OnSwitchPosition -= MoveTile;
+        TileEvents.OnUpdateTilePosition -= MoveTile;
         MatchHandler.OnMatched -= OnMatch;
     }
 
@@ -33,33 +36,33 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void MoveTile(object sender, SwitchPositionEventArgs e)
+    private void MoveTile(object sender, UpdateTilePositionEventArgs e)
     {
         if (e.Position.x == _x && e.Position.y == _y)
         {
-            Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, -e.Direction.y, 0f);
+            Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, e.Direction.y, 0f);
 
-            transform.DOMove(targetPosition, e.Duration).OnComplete(() =>
+            transform.DOMove(targetPosition, e.Duration).SetEase(Ease.Linear).OnComplete(() =>
             {
                 SetPosition(_x + e.Direction.x, _y + e.Direction.y);
             });
         }
     }
 
-    private void OnMatch(object sender, Vector2Int e)
+    private void OnMatch(object sender, MatchedTileEventArgs e)
     {
-        if (e.x == _x && e.y == _y)
+        if (e.Position.x == _x && e.Position.y == _y)
         {
-            transform.DOScale(0.01f, 0.3f).OnComplete(() =>
-            {
-                Destroy(gameObject);
-            });
+            //tileSprite.color = Color.black;
+            transform.DOScale(0f, e.Duration).OnComplete(() => { Destroy(gameObject); });
         }
     }
+
     private void SetPosition(int x, int y)
     {
         _x = x;
         _y = y;
         gameObject.name = $"Tile ({_x}, {_y})";
+        textPos.text = $"{_x},{_y}";
     }
 }

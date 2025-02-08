@@ -1,73 +1,84 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+
+
+public class MatchedTileEventArgs : EventArgs
+{
+    public Vector2Int Position { get; }
+    public float Duration { get; }
+
+    public MatchedTileEventArgs(Vector2Int position, float duration)
+    {
+        Position = position;
+        Duration = duration;
+    }
+}
 
 public class MatchHandler : MonoBehaviour
 {
-    public static event EventHandler<Vector2Int> OnMatched;
+    public static event EventHandler<MatchedTileEventArgs> OnMatched;
 
-    [SerializeField] private int minimumMatch = 3;
+    [SerializeField] private float removeTileDuration = 0.2f;
+    [SerializeField] private float fallDuration = 0.05f;
 
     private Board _board;
-
-    private readonly Vector2Int[] _searchVectors =
-    {
-        new(1, 0), // Horizontal
-        new(0, 1), // Vertical
-    };
+    private ScoreManager _scoreManager;
 
     void Awake()
     {
         _board = GetComponent<Board>();
-    }
-
-    public List<Vector2Int> GetMatches(string tileId, Vector2Int tilePosition)
-    {
-        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
-
-        foreach (Vector2Int vector in _searchVectors)
-        {
-            List<Vector2Int> currentMatches = new List<Vector2Int> { tilePosition };
-
-            bool isForwardVectorRunning = true;
-            bool isBackwardVectorRunning = true;
-            int index = 1;
-
-            while (isForwardVectorRunning || isBackwardVectorRunning)
-            {
-                Vector2Int vectorModifier = vector * index;
-                Vector2Int checkPositionA = tilePosition + vectorModifier;
-                Vector2Int checkPositionB = tilePosition + vectorModifier * -1;
-
-                if (isForwardVectorRunning && IsMatchingTile(checkPositionA, tileId)) currentMatches.Add(checkPositionA);
-                else isForwardVectorRunning = false;
-
-                if (isBackwardVectorRunning && IsMatchingTile(checkPositionB, tileId)) currentMatches.Add(checkPositionB);
-                else isBackwardVectorRunning = false;
-
-                if (isForwardVectorRunning || isBackwardVectorRunning) index++;
-                else break;
-            }
-
-            if (currentMatches.Count >= minimumMatch) matches.AddRange(currentMatches);
-        }
-
-        return matches.ToList();
+        _scoreManager = FindFirstObjectByType<ScoreManager>();
     }
 
     public void HandleMatches(List<Vector2Int> matches)
     {
         foreach (Vector2Int match in matches)
         {
-            OnMatched?.Invoke(this, match);
+            StartCoroutine(HandleMatch(match));
+        }
+
+        // check new matches
+    }
+
+    private IEnumerator HandleMatch(Vector2Int match)
+    {
+        OnMatched?.Invoke(this, new MatchedTileEventArgs(match, removeTileDuration));
+        _scoreManager.AddScore(_board.GetScore(match));
+        _board.RemoveTile(match);
+        yield return new WaitForSeconds(removeTileDuration);
+
+        DropTiles(match);
+    }
+
+    private List<Vector2Int> GetFallingTilesAbove(Vector2Int matchedPos)
+    {
+        List<Vector2Int> fallingTiles = new List<Vector2Int>();
+
+        for (int i = matchedPos.y + 1; i < _board.BoardGrid.GetLength(1); i++)
+        {
+            fallingTiles.Add(new Vector2Int(matchedPos.x, i));
+        }
+
+        return fallingTiles;
+    }
+
+    private void DropTiles(Vector2Int dropPos)
+    {
+        List<Vector2Int> fallingTiles = GetFallingTilesAbove(dropPos);
+
+        foreach (var tilePos in fallingTiles)
+        {
+            StartCoroutine(UpdateTilePositions(tilePos));
         }
     }
 
-    private bool IsMatchingTile(Vector2Int checkPosition, string tileId)
+    private IEnumerator UpdateTilePositions(Vector2Int tilePos)
     {
-        return _board.IsInGrid(checkPosition.x, checkPosition.y) &&
-               _board.BoardGrid[checkPosition.x, checkPosition.y].id == tileId;
+        Vector2Int newPos = tilePos + Vector2Int.down;
+        TileEvents.UpdateTilePosition(this, tilePos, Vector2Int.down, fallDuration);
+        yield return new WaitForSeconds(fallDuration);
+        _board.UpdateTile(tilePos, newPos);
     }
 }
