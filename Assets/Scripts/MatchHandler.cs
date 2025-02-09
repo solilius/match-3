@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class MatchedTileEventArgs : EventArgs
 {
-    public Vector2Int Position { get; }
+    public int GameObjectId { get; }
     public float Duration { get; }
 
-    public MatchedTileEventArgs(Vector2Int position, float duration)
+    public MatchedTileEventArgs(int gameObjectId, float duration)
     {
-        Position = position;
+        GameObjectId = gameObjectId;
         Duration = duration;
     }
 }
@@ -34,58 +34,53 @@ public class MatchHandler : MonoBehaviour
 
     public void HandleMatches(List<Vector2Int> matches)
     {
-        matches.ForEach(m => _scoreManager.AddScore(_board.GetScore(m)));
-        matches.ForEach(_board.RemoveTile);
+        // get score
 
         foreach (Vector2Int match in matches)
         {
             StartCoroutine(HandleMatch(match));
         }
 
+        DropTiles();
         // check new matches
     }
 
     private IEnumerator HandleMatch(Vector2Int match)
     {
-        OnMatched?.Invoke(this, new MatchedTileEventArgs(match, removeTileDuration));
+        int gameObjectId = _board.GetTile(match).GameObjectId;
+        _board.RemoveTile(match);
+        OnMatched?.Invoke(this, new MatchedTileEventArgs(gameObjectId, removeTileDuration));
         yield return new WaitForSeconds(removeTileDuration);
-        
-        DropTiles(match);
     }
 
-    private List<Vector2Int> GetFallingTilesAbove(Vector2Int matchedPos)
+    private void DropTiles()
     {
-        List<Vector2Int> fallingTiles = new List<Vector2Int>();
+        List<Vector2Int> holes = _board.GetHoles();
+        var holesSet = new HashSet<Vector2Int>(holes);
 
-        for (int i = matchedPos.y + 1; i < _board.BoardGrid.GetLength(1); i++)
+        for (int x = 0; x < _board.BoardGrid.GetLength(0); x++)
         {
-            if (_board.BoardGrid[matchedPos.x, i] != null)
-                fallingTiles.Add(new Vector2Int(matchedPos.x, i));
-        }
-
-        return fallingTiles;
-    }
-
-    private void DropTiles(Vector2Int dropPos)
-    {
-        List<Vector2Int> fallingTiles = GetFallingTilesAbove(dropPos);
-
-        int floor = dropPos.y;
-
-        foreach (var tilePos in fallingTiles)
-        {
-            // find how much needed to get from its y to the floor-1
-            int distance = Mathf.Abs(floor - tilePos.y);
-            floor++;
-            StartCoroutine(UpdateTilePositions(tilePos, distance));
+            int dropCount = 0;
+            for (int y = 0; y < _board.BoardGrid.GetLength(1); y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                if (holesSet.Contains(pos))
+                {
+                    dropCount++;
+                }
+                else if (dropCount > 0)
+                {
+                    Vector2Int nextPos = pos + new Vector2Int(0, -dropCount);
+                    StartCoroutine(UpdateTilePositions(pos, nextPos));
+                }
+            }
         }
     }
 
-    private IEnumerator UpdateTilePositions(Vector2Int tilePos, int distance)
+
+    private IEnumerator UpdateTilePositions(Vector2Int tilePos, Vector2Int newPos)
     {
-        Vector2Int vector = Vector2Int.down * distance;
-        Vector2Int newPos = tilePos + vector;
-        TileEvents.UpdateTilePosition(this, tilePos, vector, fallDuration);
+        TileEvents.UpdateTilePosition(this, _board.GetTile(tilePos).GameObjectId, newPos, fallDuration);
         yield return new WaitForSeconds(fallDuration);
         _board.UpdateTile(tilePos, newPos);
     }

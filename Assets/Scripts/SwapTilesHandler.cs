@@ -32,7 +32,7 @@ public class SwapTilesHandler : MonoBehaviour
     private void HandleDragging()
     {
         if (Input.GetMouseButtonUp(0)) _isDragging = false;
-        
+
         Vector2 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (!_isDragging && Input.GetMouseButtonDown(0) && IsDraggable(currentPosition, out Vector2Int gridPosition))
@@ -64,25 +64,19 @@ public class SwapTilesHandler : MonoBehaviour
 
     private IEnumerator SwapTiles(Vector2Int draggedGridPosition, Vector2 direction)
     {
+        TileEvents.UpdateTilePosition(this, _board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
+        TileEvents.UpdateTilePosition(this, _board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
         _board.SwitchTiles(_selectedTilePos, draggedGridPosition);
-
-        TileEvents.UpdateTilePosition(this, _selectedTilePos, direction, swapDuration);
-        TileEvents.UpdateTilePosition(this, draggedGridPosition, direction * -1, swapDuration);
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
-        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
-
-        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y]?.variant,
-            _selectedTilePos));
-        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y]?.variant,
-            draggedGridPosition));
+        List<Vector2Int> matches = _matchFinder.GetSwapMatches(draggedGridPosition, _selectedTilePos);
 
         if (matches.Count == 0)
         {
+            TileEvents.UpdateTilePosition(this, _board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
+            TileEvents.UpdateTilePosition(this, _board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
             _board.SwitchTiles(draggedGridPosition, _selectedTilePos);
-            TileEvents.UpdateTilePosition(this, _selectedTilePos, direction, swapDuration);
-            TileEvents.UpdateTilePosition(this, draggedGridPosition, direction * -1, swapDuration);
         }
         else
         {
@@ -110,7 +104,7 @@ public class SwapTilesHandler : MonoBehaviour
 
         return _board.IsInGrid(x, y) && _board.BoardGrid[gridPosition.x, gridPosition.y] != null;
     }
-    
+
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)
     {
         return _isDragging && Vector2.Distance(startPosition, endPosition) >= dragDistance;

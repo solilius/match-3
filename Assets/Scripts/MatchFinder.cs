@@ -20,7 +20,17 @@ public class MatchFinder : MonoBehaviour
         _board = GetComponent<Board>();
     }
 
-    public List<Vector2Int> GetMatches(string tileId, Vector2Int tilePosition)
+    public List<Vector2Int> GetSwapMatches(Vector2Int tileA, Vector2Int tileB)
+    {
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
+
+        matches.UnionWith(GetMatches(_board.GetTile(tileA)?.Variant, tileA));
+        matches.UnionWith(GetMatches(_board.GetTile(tileB)?.Variant, tileB));
+
+        return matches.ToList();
+    }
+    
+    private List<Vector2Int> GetMatches(string tileVariant, Vector2Int tilePosition)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
@@ -38,10 +48,10 @@ public class MatchFinder : MonoBehaviour
                 Vector2Int checkPositionA = tilePosition + vectorModifier;
                 Vector2Int checkPositionB = tilePosition + vectorModifier * -1;
 
-                if (isForwardVectorRunning && IsMatchingTile(checkPositionA, tileId)) currentMatches.Add(checkPositionA);
+                if (isForwardVectorRunning && IsMatchingTile(checkPositionA, tileVariant)) currentMatches.Add(checkPositionA);
                 else isForwardVectorRunning = false;
 
-                if (isBackwardVectorRunning && IsMatchingTile(checkPositionB, tileId)) currentMatches.Add(checkPositionB);
+                if (isBackwardVectorRunning && IsMatchingTile(checkPositionB, tileVariant)) currentMatches.Add(checkPositionB);
                 else isBackwardVectorRunning = false;
 
                 if (isForwardVectorRunning || isBackwardVectorRunning) index++;
@@ -54,9 +64,8 @@ public class MatchFinder : MonoBehaviour
         return matches.OrderBy(v => v.y).ThenBy(v => v.x).ToList();
     }
 
-    private bool IsMatchingTile(Vector2Int checkPosition, string tileId)
+    private bool IsMatchingTile(Vector2Int checkPosition, string tileVariant)
     {
-        return _board.IsInGrid(checkPosition.x, checkPosition.y) &&
-               _board.BoardGrid[checkPosition.x, checkPosition.y]?.variant == tileId;
+        return _board.GetTile(checkPosition)?.Variant == tileVariant;
     }
 }

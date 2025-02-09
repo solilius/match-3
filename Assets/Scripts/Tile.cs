@@ -7,14 +7,11 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
     [SerializeField] private TMP_Text textPos;
-    [SerializeField] private float moveCooldownTime = 0.5f;
 
-    private string id;
     private int _x;
     private int _y;
-
+    
     private bool _isSwapping;
-    [SerializeField] private  float _moveCooldown = 0;
 
     void OnEnable()
     {
@@ -28,15 +25,9 @@ public class Tile : MonoBehaviour
         MatchHandler.OnMatched -= OnMatch;
     }
 
-    void Update()
-    {
-        _moveCooldown -= Time.deltaTime;
-    }
-
     public void Initialize(TileSO data, int x, int y)
     {
         SetPosition(x, y);
-        id = data.variant;
         if (tileSprite != null && data.sprite != null)
         {
             tileSprite.sprite = data.sprite;
@@ -45,24 +36,20 @@ public class Tile : MonoBehaviour
 
     private void MoveTile(object sender, UpdateTilePositionEventArgs e)
     {
-        if (e.Position.x == _x && e.Position.y == _y && _moveCooldown <= 0)
+        if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            _moveCooldown = moveCooldownTime;
-            Debug.Log(e.Position);
-            Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, e.Direction.y, 0f);
-
+            Vector3 targetPosition = CalcTilePosition(e.NewPosition);
             transform.DOMove(targetPosition, e.Duration).SetEase(Ease.Linear).OnComplete(() =>
             {
-                SetPosition(_x + e.Direction.x, _y + e.Direction.y);
+                SetPosition(e.NewPosition.x, e.NewPosition.y);
             });
         }
     }
 
     private void OnMatch(object sender, MatchedTileEventArgs e)
     {
-        if (e.Position.x == _x && e.Position.y == _y)
+        if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            _moveCooldown = 0;
             transform.DOScale(0f, e.Duration).OnComplete(() => { Destroy(gameObject); });
         }
     }
@@ -73,5 +60,12 @@ public class Tile : MonoBehaviour
         _y = y;
         gameObject.name = $"Tile ({_x}, {_y})";
         textPos.text = $"{_x},{_y}";
+    }
+    
+    private static Vector3 CalcTilePosition(Vector2Int position)
+    {
+        // Make the spawn at top left instead of center
+        // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
+        return new Vector3(position.x, position.y, 0f) + new Vector3(0.5f, -0.5f, 0f);
     }
 }

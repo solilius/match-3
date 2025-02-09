@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class UpdateTilePositionEventArgs : EventArgs
 {
-    public Vector2Int Position { get; }
-    public Vector2Int Direction { get; }
+    public int GameObjectId { get; }
+    public Vector2Int NewPosition { get; }
     public float Duration { get; }
 
-    public UpdateTilePositionEventArgs(Vector2Int position, Vector2 direction, float duration)
+    public UpdateTilePositionEventArgs(int gameObjectId, Vector2Int newPosition, float duration)
     {
-        Position = position;
-        Direction = Vector2Int.RoundToInt(direction);
+        GameObjectId = gameObjectId;
+        NewPosition = newPosition;
         Duration = duration;
     }
 }
@@ -18,10 +18,10 @@ public class UpdateTilePositionEventArgs : EventArgs
 public static class TileEvents
 {
     public static event EventHandler<UpdateTilePositionEventArgs> OnUpdateTilePosition;
-
     
-    public static void UpdateTilePosition(object that, Vector2Int position, Vector2 direction, float duration)
+    public static void UpdateTilePosition(object that, int gameObjectId, Vector2Int newPosition, float duration)
     {
-        OnUpdateTilePosition?.Invoke(that, new UpdateTilePositionEventArgs(position, direction, duration));
+        OnUpdateTilePosition?.Invoke(that, new UpdateTilePositionEventArgs(gameObjectId, newPosition, duration));
     }
 }
+
