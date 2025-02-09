@@ -11,8 +11,9 @@ public class TilesCatalog : MonoBehaviour
         _tiles = Resources.LoadAll<TileSO>("ScriptableObjects/Fruits").ToList();
     }
 
-    public TileSO GetTile(string tileId)
+    public TileSO GetTileVariant(string variant = null)
     {
-        return _tiles.Find(tile => tile.variant == tileId);
+        if (variant == null) return _tiles[Random.Range(0, _tiles.Count)];
+        return _tiles.Find(tile => tile.variant == variant);
     }
 }

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   tileType: 0
-  id: Apple
+  variant: Apple
   sprite: {fileID: 21300000, guid: b7481a4c424715542a70ac1efc7468db, type: 3}
   score: 10

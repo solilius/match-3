@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Pear
   m_EditorClassIdentifier: 
   tileType: 0
-  id: Pear
+  variant: Pear
   sprite: {fileID: 21300000, guid: 50dd2e8acaa7426438d693e39eb73026, type: 3}
   score: 10

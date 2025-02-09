@@ -7,7 +7,7 @@ public class MatchFinder : MonoBehaviour
 {
     [SerializeField] private int minimumMatch = 3;
 
-    private Board _board;
+    private BoardManager _boardManager;
 
     private readonly Vector2Int[] _searchVectors =
     {
@@ -17,15 +17,15 @@ public class MatchFinder : MonoBehaviour
 
     void Awake()
     {
-        _board = GetComponent<Board>();
+        _boardManager = GetComponent<BoardManager>();
     }
 
     public List<Vector2Int> GetSwapMatches(Vector2Int tileA, Vector2Int tileB)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
-        matches.UnionWith(GetMatches(_board.GetTile(tileA)?.Variant, tileA));
-        matches.UnionWith(GetMatches(_board.GetTile(tileB)?.Variant, tileB));
+        matches.UnionWith(GetMatches(_boardManager.Board.GetTile(tileA)?.Variant, tileA));
+        matches.UnionWith(GetMatches(_boardManager.Board.GetTile(tileB)?.Variant, tileB));
 
         return matches.ToList();
     }
@@ -66,6 +66,6 @@ public class MatchFinder : MonoBehaviour
 
     private bool IsMatchingTile(Vector2Int checkPosition, string tileVariant)
     {
-        return _board.GetTile(checkPosition)?.Variant == tileVariant;
+        return _boardManager.Board.GetTile(checkPosition)?.Variant == tileVariant;
     }
 }

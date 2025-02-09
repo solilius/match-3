@@ -3,18 +3,19 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     
-    [SerializeField] private Board board;
+    private BoardManager _boardManager;
     
     private TilesCatalog tileCatalog;
     
     private void Awake()
     { 
         tileCatalog = gameObject.AddComponent<TilesCatalog>();
+        _boardManager = FindFirstObjectByType<BoardManager>();
     }
 
     void Start()
     {
-        board.Initialize(tileCatalog, TempInit());
+        _boardManager.Initialize(tileCatalog, TempInit());
     }
     
     private string[,] TempInit()

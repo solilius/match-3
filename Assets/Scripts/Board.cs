@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-
 
 public class GameTile
 {
@@ -15,18 +13,13 @@ public class GameTile
     }
 }
 
-public class Board : MonoBehaviour
+public class Board
 {
     public GameTile[,] BoardGrid { get; private set; }
 
-    [SerializeField] private GameObject tilePrefab;
-
-    private TilesCatalog _tileCatalog;
-    
-    public void Initialize(TilesCatalog catalog, string[,] grid)
+    public Board(int width, int height)
     {
-        _tileCatalog = catalog;
-        SetBoard(grid);
+        BoardGrid = new GameTile[width, height];
     }
 
     public GameTile GetTile(Vector2Int pos)
@@ -66,28 +59,24 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < BoardGrid.GetLength(1); y++)
             {
-               if (BoardGrid[x, y] == null) holes.Add(new Vector2Int(x, y));
+                if (BoardGrid[x, y] == null) holes.Add(new Vector2Int(x, y));
             }
         }
+
+        return holes;
+    }
+
+    public List<Vector2Int> GetHoles(int col)
+    {
+        List<Vector2Int> holes = new List<Vector2Int>();
+        for (int x = 0; x < BoardGrid.GetLength(0); x++)
+        {
+            if (BoardGrid[x, col] == null) holes.Add(new Vector2Int(x, col));
+        }
+
         return holes;
     }
     
-    private void SetBoard(string[,] grid)
-    {
-        BoardGrid = new GameTile[grid.GetLength(0), grid.GetLength(1)];
-        
-        for (int x = 0; x < grid.GetLength(0); x++)
-        {
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                GameObject tile = Instantiate(tilePrefab, CalcTilePosition(x, y), Quaternion.identity);
-                TileSO tileData = _tileCatalog.GetTile(grid[x, y]);
-                tile.GetComponent<Tile>().Initialize(tileData, x, y);
-                BoardGrid[x, y] = new GameTile(tile.GetInstanceID(), tileData.variant);
-            }
-        }
-    }
-
     private static Vector3 CalcTilePosition(float x, float y)
     {
         // Make the spawn at top left instead of center

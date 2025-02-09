@@ -9,7 +9,7 @@ public class SwapTilesHandler : MonoBehaviour
     [SerializeField] private float dragDistance = .5f;
     [SerializeField] private float swapDuration = .5f;
 
-    private Board _board;
+    private BoardManager _boardManager;
     private MatchFinder _matchFinder;
     private MatchHandler _matchHandler;
 
@@ -19,7 +19,7 @@ public class SwapTilesHandler : MonoBehaviour
 
     void Start()
     {
-        _board = GetComponent<Board>();
+        _boardManager = GetComponent<BoardManager>();
         _matchFinder = GetComponent<MatchFinder>();
         _matchHandler = GetComponent<MatchHandler>();
     }
@@ -64,9 +64,9 @@ public class SwapTilesHandler : MonoBehaviour
 
     private IEnumerator SwapTiles(Vector2Int draggedGridPosition, Vector2 direction)
     {
-        TileEvents.UpdateTilePosition(this, _board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
-        TileEvents.UpdateTilePosition(this, _board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
-        _board.SwitchTiles(_selectedTilePos, draggedGridPosition);
+        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
+        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
+        _boardManager.Board.SwitchTiles(_selectedTilePos, draggedGridPosition);
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
@@ -74,9 +74,9 @@ public class SwapTilesHandler : MonoBehaviour
 
         if (matches.Count == 0)
         {
-            TileEvents.UpdateTilePosition(this, _board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
-            TileEvents.UpdateTilePosition(this, _board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
-            _board.SwitchTiles(draggedGridPosition, _selectedTilePos);
+            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
+            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
+            _boardManager.Board.SwitchTiles(draggedGridPosition, _selectedTilePos);
         }
         else
         {
@@ -102,7 +102,7 @@ public class SwapTilesHandler : MonoBehaviour
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
 
-        return _board.IsInGrid(x, y) && _board.BoardGrid[gridPosition.x, gridPosition.y] != null;
+        return _boardManager.Board.IsInGrid(x, y) && _boardManager.Board.BoardGrid[gridPosition.x, gridPosition.y] != null;
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)

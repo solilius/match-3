@@ -38,7 +38,7 @@ public class Tile : MonoBehaviour
     {
         if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            Vector3 targetPosition = CalcTilePosition(e.NewPosition);
+            Vector3 targetPosition = BoardManager.CalcTilePosition(e.NewPosition);
             transform.DOMove(targetPosition, e.Duration).SetEase(Ease.Linear).OnComplete(() =>
             {
                 SetPosition(e.NewPosition.x, e.NewPosition.y);
@@ -60,12 +60,5 @@ public class Tile : MonoBehaviour
         _y = y;
         gameObject.name = $"Tile ({_x}, {_y})";
         textPos.text = $"{_x},{_y}";
-    }
-    
-    private static Vector3 CalcTilePosition(Vector2Int position)
-    {
-        // Make the spawn at top left instead of center
-        // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
-        return new Vector3(position.x, position.y, 0f) + new Vector3(0.5f, -0.5f, 0f);
     }
 }

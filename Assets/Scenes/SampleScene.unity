@@ -351,6 +351,7 @@ GameObject:
   - component: {fileID: 1159368772}
   - component: {fileID: 1159368771}
   - component: {fileID: 1159368773}
+  - component: {fileID: 1159368777}
   - component: {fileID: 1159368774}
   - component: {fileID: 1159368775}
   - component: {fileID: 1159368776}
@@ -444,6 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 6646725095160245019, guid: a57f89724634e3642a465d1cbc8458ce, type: 3}
+  _tileCatalog: {fileID: 0}
 --- !u!114 &1159368774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,7 +486,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   removeTileDuration: 0.2
-  fallDuration: 0.1
+--- !u!114 &1159368777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159368770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1878401837f642c89c54ecc656cc6b4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fallDuration: 0.05
+  tilePrefab: {fileID: 6646725095160245019, guid: a57f89724634e3642a465d1cbc8458ce, type: 3}
 --- !u!1 &1602138548
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,7 +632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb162622068e5fd46a8a9915b47ebad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 1159368773}
 --- !u!114 &1816181346
 MonoBehaviour:
   m_ObjectHideFlags: 0
