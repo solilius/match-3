@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSprite: {fileID: 4655688061774127576}
   textPos: {fileID: 671048306702755673}
+  moveCooldownTime: 0.1
+  _moveCooldown: 0
 --- !u!1 &8544895424261162495
 GameObject:
   m_ObjectHideFlags: 0

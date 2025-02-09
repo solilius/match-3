@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SwapTilesHandler : MonoBehaviour
@@ -31,7 +32,7 @@ public class SwapTilesHandler : MonoBehaviour
     private void HandleDragging()
     {
         if (Input.GetMouseButtonUp(0)) _isDragging = false;
-
+        
         Vector2 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (!_isDragging && Input.GetMouseButtonDown(0) && IsDraggable(currentPosition, out Vector2Int gridPosition))
@@ -41,6 +42,7 @@ public class SwapTilesHandler : MonoBehaviour
             _selectedTilePos = gridPosition;
         }
 
+        if (!_isDragging) return;
         if (IsValidDrag(_startDragPosition, currentPosition))
         {
             HandleSwap(currentPosition);
@@ -69,11 +71,11 @@ public class SwapTilesHandler : MonoBehaviour
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
-        List<Vector2Int> matches = new List<Vector2Int>();
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
-        matches.AddRange(_matchFinder.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y]?.id,
+        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y]?.id,
             _selectedTilePos));
-        matches.AddRange(_matchFinder.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y]?.id,
+        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y]?.id,
             draggedGridPosition));
 
         if (matches.Count == 0)
@@ -84,7 +86,7 @@ public class SwapTilesHandler : MonoBehaviour
         }
         else
         {
-            _matchHandler.HandleMatches(matches);
+            _matchHandler.HandleMatches(matches.ToList());
         }
     }
 

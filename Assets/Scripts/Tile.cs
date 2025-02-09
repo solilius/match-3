@@ -7,12 +7,14 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
     [SerializeField] private TMP_Text textPos;
-    
+    [SerializeField] private float moveCooldownTime = 0.5f;
+
     private string id;
     private int _x;
     private int _y;
-    
+
     private bool _isSwapping;
+    [SerializeField] private  float _moveCooldown = 0;
 
     void OnEnable()
     {
@@ -24,6 +26,11 @@ public class Tile : MonoBehaviour
     {
         TileEvents.OnUpdateTilePosition -= MoveTile;
         MatchHandler.OnMatched -= OnMatch;
+    }
+
+    void Update()
+    {
+        _moveCooldown -= Time.deltaTime;
     }
 
     public void Initialize(TileSO data, int x, int y)
@@ -38,8 +45,10 @@ public class Tile : MonoBehaviour
 
     private void MoveTile(object sender, UpdateTilePositionEventArgs e)
     {
-        if (e.Position.x == _x && e.Position.y == _y)
+        if (e.Position.x == _x && e.Position.y == _y && _moveCooldown <= 0)
         {
+            _moveCooldown = moveCooldownTime;
+            Debug.Log(e.Position);
             Vector3 targetPosition = transform.position + new Vector3(e.Direction.x, e.Direction.y, 0f);
 
             transform.DOMove(targetPosition, e.Duration).SetEase(Ease.Linear).OnComplete(() =>
@@ -53,7 +62,7 @@ public class Tile : MonoBehaviour
     {
         if (e.Position.x == _x && e.Position.y == _y)
         {
-            //tileSprite.color = Color.black;
+            _moveCooldown = 0;
             transform.DOScale(0f, e.Duration).OnComplete(() => { Destroy(gameObject); });
         }
     }

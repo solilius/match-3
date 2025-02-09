@@ -51,7 +51,7 @@ public class MatchFinder : MonoBehaviour
             if (currentMatches.Count >= minimumMatch) matches.AddRange(currentMatches);
         }
 
-        return matches.ToList();
+        return matches.OrderBy(v => v.y).ThenBy(v => v.x).ToList();
     }
 
     private bool IsMatchingTile(Vector2Int checkPosition, string tileId)
