@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum TileType
 {
@@ -9,6 +10,6 @@ public enum TileType
 public abstract class TileSO : ScriptableObject
 {
     public TileType tileType;
-    public string id;
+    public string variant;
     public Sprite sprite;
 }

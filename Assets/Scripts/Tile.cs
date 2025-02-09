@@ -36,7 +36,7 @@ public class Tile : MonoBehaviour
     public void Initialize(TileSO data, int x, int y)
     {
         SetPosition(x, y);
-        id = data.id;
+        id = data.variant;
         if (tileSprite != null && data.sprite != null)
         {
             tileSprite.sprite = data.sprite;

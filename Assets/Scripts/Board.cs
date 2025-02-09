@@ -52,7 +52,7 @@ public class Board : MonoBehaviour
             for (int y = 0; y < BoardGrid.GetLength(1); y++)
             {
                 GameObject tile = Instantiate(tilePrefab, CalcTilePosition(x, y), Quaternion.identity);
-                TileSO tileData = _tileCatalog.GetTile(BoardGrid[x, y].id);
+                TileSO tileData = _tileCatalog.GetTile(BoardGrid[x, y].variant);
                 tile.GetComponent<Tile>().Initialize(tileData, x, y);
             }
         }

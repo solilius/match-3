@@ -73,9 +73,9 @@ public class SwapTilesHandler : MonoBehaviour
 
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
-        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y]?.id,
+        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[_selectedTilePos.x, _selectedTilePos.y]?.variant,
             _selectedTilePos));
-        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y]?.id,
+        matches.UnionWith(_matchFinder.GetMatches(_board.BoardGrid[draggedGridPosition.x, draggedGridPosition.y]?.variant,
             draggedGridPosition));
 
         if (matches.Count == 0)

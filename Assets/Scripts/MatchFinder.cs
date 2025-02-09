@@ -57,6 +57,6 @@ public class MatchFinder : MonoBehaviour
     private bool IsMatchingTile(Vector2Int checkPosition, string tileId)
     {
         return _board.IsInGrid(checkPosition.x, checkPosition.y) &&
-               _board.BoardGrid[checkPosition.x, checkPosition.y]?.id == tileId;
+               _board.BoardGrid[checkPosition.x, checkPosition.y]?.variant == tileId;
     }
 }

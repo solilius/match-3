@@ -13,6 +13,6 @@ public class TilesCatalog : MonoBehaviour
 
     public TileSO GetTile(string tileId)
     {
-        return _tiles.Find(tile => tile.id == tileId);
+        return _tiles.Find(tile => tile.variant == tileId);
     }
 }
