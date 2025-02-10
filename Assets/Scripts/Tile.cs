@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -16,13 +15,13 @@ public class Tile : MonoBehaviour
     void OnEnable()
     {
         TileEvents.OnUpdateTilePosition += MoveTile;
-        MatchHandler.OnMatched += OnMatch;
+        BoardManager.OnMatched += OnMatch;
     }
 
     void OnDisable()
     {
         TileEvents.OnUpdateTilePosition -= MoveTile;
-        MatchHandler.OnMatched -= OnMatch;
+        BoardManager.OnMatched -= OnMatch;
     }
 
     public void Initialize(TileSO data, int x, int y)

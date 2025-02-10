@@ -16,23 +16,28 @@ public class GameTile
 public class Board
 {
     public GameTile[,] BoardGrid { get; private set; }
+    public int BoardWidth => BoardGrid.GetLength(0);
+    public int BoardHeight => BoardGrid.GetLength(1) -1;
+    public int BoardHeightWithSpawner => BoardGrid.GetLength(1);
+    public int SpawnerRow => BoardGrid.GetLength(1) -1;
 
     public Board(int width, int height)
     {
-        BoardGrid = new GameTile[width, height];
+        BoardGrid = new GameTile[width, height + 1];
     }
 
-    public GameTile GetTile(Vector2Int pos)
+    public GameTile GetTile(Vector2Int pos, bool includeSpawner = false)
     {
-        if (!IsInGrid(pos.x, pos.y)) return null;
+        if (!IsInGrid(pos.x, pos.y, includeSpawner)) return null;
         return BoardGrid[pos.x, pos.y];
     }
 
-    public bool IsInGrid(int x, int y)
+    public bool IsInGrid(int x, int y, bool includeSpawner = false)
     {
+        int boardHeight = includeSpawner ? BoardHeightWithSpawner : BoardHeight;
         return BoardGrid != null &&
-               x >= 0 && x < BoardGrid.GetLength(0) &&
-               y >= 0 && y < BoardGrid.GetLength(1);
+               x >= 0 && x < BoardWidth &&
+               y >= 0 && y < boardHeight;
     }
 
     public void SwitchTiles(Vector2Int tileA, Vector2Int tileB)
@@ -52,31 +57,24 @@ public class Board
         BoardGrid[tilePos.x, tilePos.y] = null;
     }
 
-    public List<Vector2Int> GetHoles()
+    public List<Vector2Int> GetLowestRowHoles()
     {
         List<Vector2Int> holes = new List<Vector2Int>();
-        for (int x = 0; x < BoardGrid.GetLength(0); x++)
+        for (int y = 0; y < BoardHeight; y++)
         {
-            for (int y = 0; y < BoardGrid.GetLength(1); y++)
+            for (int x = 0; x < BoardWidth; x++)
             {
                 if (BoardGrid[x, y] == null) holes.Add(new Vector2Int(x, y));
             }
+
+            if (holes.Count > 0) break;
+            holes.Clear();
         }
 
+        holes.ForEach(h => Debug.Log(h));
         return holes;
     }
 
-    public List<Vector2Int> GetHoles(int col)
-    {
-        List<Vector2Int> holes = new List<Vector2Int>();
-        for (int x = 0; x < BoardGrid.GetLength(0); x++)
-        {
-            if (BoardGrid[x, col] == null) holes.Add(new Vector2Int(x, col));
-        }
-
-        return holes;
-    }
-    
     private static Vector3 CalcTilePosition(float x, float y)
     {
         // Make the spawn at top left instead of center

@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class SwapTilesHandler : MonoBehaviour
@@ -11,7 +9,6 @@ public class SwapTilesHandler : MonoBehaviour
 
     private BoardManager _boardManager;
     private MatchFinder _matchFinder;
-    private MatchHandler _matchHandler;
 
     private bool _isDragging;
     private Vector2 _startDragPosition;
@@ -21,7 +18,6 @@ public class SwapTilesHandler : MonoBehaviour
     {
         _boardManager = GetComponent<BoardManager>();
         _matchFinder = GetComponent<MatchFinder>();
-        _matchHandler = GetComponent<MatchHandler>();
     }
 
     void Update()
@@ -80,7 +76,7 @@ public class SwapTilesHandler : MonoBehaviour
         }
         else
         {
-            _matchHandler.HandleMatches(matches.ToList());
+            _boardManager.HandleMatches(matches);
         }
     }
 
