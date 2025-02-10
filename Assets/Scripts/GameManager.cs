@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
             { "Pear", "Pear", "Banana", "Apple", "Pear", "Grape" },
             { "Apple", "Apple", "Pear", "Banana", "Apple", "Pear" },
             { "Banana", "Grape", "Apple", "Pear", "Banana", "Apple" },
-            { "Pear", "Banana", "Grape", "Apple", "Pear", "Banana" }
+            { "Pear", "Banana", "Pear", "Apple", "Pear", "Banana" }
         };
 
         return grid;

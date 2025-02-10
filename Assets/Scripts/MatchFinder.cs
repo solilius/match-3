@@ -20,7 +20,7 @@ public class MatchFinder : MonoBehaviour
         _boardManager = GetComponent<BoardManager>();
     }
 
-    public List<Vector2Int> GetMatches(HashSet<Vector2Int> changes)
+    public HashSet<Vector2Int> GetMatches(HashSet<Vector2Int> changes)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
@@ -29,7 +29,7 @@ public class MatchFinder : MonoBehaviour
             matches.UnionWith(GetTileMatches(_boardManager.Board.GetTile(change)?.Variant, change));
         }
 
-        return matches.ToList();
+        return matches;
     }
     
     public List<Vector2Int> GetTileMatches(string tileVariant, Vector2Int tilePosition)

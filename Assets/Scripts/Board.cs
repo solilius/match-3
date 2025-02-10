@@ -17,9 +17,9 @@ public class Board
 {
     public GameTile[,] BoardGrid { get; private set; }
     public int BoardWidth => BoardGrid.GetLength(0);
-    public int BoardHeight => BoardGrid.GetLength(1) -1;
+    public int BoardHeight => BoardGrid.GetLength(1) - 1;
     public int BoardHeightWithSpawner => BoardGrid.GetLength(1);
-    public int SpawnerRow => BoardGrid.GetLength(1) -1;
+    public int SpawnerRow => BoardGrid.GetLength(1) - 1;
 
     public Board(int width, int height)
     {

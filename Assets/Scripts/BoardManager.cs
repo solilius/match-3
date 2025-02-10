@@ -64,10 +64,10 @@ public class BoardManager : MonoBehaviour
         OnMatched?.Invoke(this, new MatchedTileEventArgs(gameObjectId, moveDuration));
     }
 
-    public void HandleMatches(List<Vector2Int> matches)
+    public void HandleMatches(HashSet<Vector2Int> matches)
     {
         _scoreManager.AddScore(matches.Count * 10);
-        matches.ForEach(RemoveTile);
+        matches.ToList().ForEach(RemoveTile);
         StartCoroutine(UpdateBoard());
     }
 
@@ -85,14 +85,33 @@ public class BoardManager : MonoBehaviour
             yield return new WaitForSeconds(moveDuration);
         }
 
-        HandlePossibleMatches(changes);
+        HashSet<Vector2Int> calculatedChangedPositions = CalculateChangedPositions(changes);
+        HandlePossibleMatches(calculatedChangedPositions);
     }
 
+    private HashSet<Vector2Int> CalculateChangedPositions(HashSet<Vector2Int> changes)
+    {
+        var lowestYPerX = new Dictionary<int, int>();
+        foreach (var change in changes)
+        {
+            if (!lowestYPerX.TryGetValue(change.x, out int currentY) || change.y < currentY)
+                lowestYPerX[change.x] = change.y;
+        }
+    
+        var positions = new HashSet<Vector2Int>();
+        foreach (var kvp in lowestYPerX)
+        {
+            for (int y = kvp.Value; y < Board.BoardHeight; y++)
+                positions.Add(new Vector2Int(kvp.Key, y));
+        }
+        return positions;
+    }
+    
     private void HandlePossibleMatches(HashSet<Vector2Int> changes)
     {
         if (changes.Count == 0) return;
 
-        List<Vector2Int> matches = _matchFinder.GetMatches(changes);
+        HashSet<Vector2Int> matches = _matchFinder.GetMatches(changes);
 
         if (matches.Count > 0)
         {
