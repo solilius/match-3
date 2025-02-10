@@ -15,4 +15,5 @@ MonoBehaviour:
   tileType: 0
   variant: Pear
   sprite: {fileID: 21300000, guid: 50dd2e8acaa7426438d693e39eb73026, type: 3}
+  popEffectColor: {r: 0.3019758, g: 0.735849, b: 0.32607988, a: 1}
   score: 10

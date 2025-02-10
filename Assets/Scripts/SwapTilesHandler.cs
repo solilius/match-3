@@ -60,18 +60,23 @@ public class SwapTilesHandler : MonoBehaviour
 
     private IEnumerator SwapTiles(Vector2Int draggedGridPosition, Vector2 direction)
     {
-        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
-        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
+        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId,
+            draggedGridPosition, swapDuration, true);
+        TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId,
+            _selectedTilePos, swapDuration, true);
         _boardManager.Board.SwitchTiles(_selectedTilePos, draggedGridPosition);
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
-        HashSet<Vector2Int> matches = _matchFinder.GetMatches(new HashSet<Vector2Int>() {draggedGridPosition, _selectedTilePos});
+        HashSet<Vector2Int> matches = _matchFinder.GetMatches(new HashSet<Vector2Int>()
+            { draggedGridPosition, _selectedTilePos });
 
         if (matches.Count == 0)
         {
-            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId, draggedGridPosition, swapDuration);
-            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId, _selectedTilePos, swapDuration);
+            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(_selectedTilePos).GameObjectId,
+                draggedGridPosition, swapDuration, true, true);
+            TileEvents.UpdateTilePosition(this, _boardManager.Board.GetTile(draggedGridPosition).GameObjectId,
+                _selectedTilePos, swapDuration, true, true);
             _boardManager.Board.SwitchTiles(draggedGridPosition, _selectedTilePos);
         }
         else
@@ -98,7 +103,8 @@ public class SwapTilesHandler : MonoBehaviour
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
 
-        return _boardManager.Board.IsInGrid(x, y) && _boardManager.Board.BoardGrid[gridPosition.x, gridPosition.y] != null;
+        return _boardManager.Board.IsInGrid(x, y) &&
+               _boardManager.Board.BoardGrid[gridPosition.x, gridPosition.y] != null;
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)

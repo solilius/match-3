@@ -15,4 +15,5 @@ MonoBehaviour:
   tileType: 0
   variant: Apple
   sprite: {fileID: 21300000, guid: b7481a4c424715542a70ac1efc7468db, type: 3}
+  popEffectColor: {r: 0.8113208, g: 0.10332859, b: 0.10332859, a: 1}
   score: 10

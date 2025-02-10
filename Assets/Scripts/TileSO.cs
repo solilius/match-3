@@ -12,4 +12,5 @@ public abstract class TileSO : ScriptableObject
     public TileType tileType;
     public string variant;
     public Sprite sprite;
+    public Color popEffectColor;
 }
