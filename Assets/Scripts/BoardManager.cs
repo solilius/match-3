@@ -51,7 +51,7 @@ public class BoardManager : MonoBehaviour
 
     private void AddTile(Vector2Int newTile, TileSO tileData)
     {
-        GameObject tile = Instantiate(tilePrefab, CalcTilePosition(newTile), Quaternion.identity);
+        GameObject tile = Instantiate(tilePrefab, CalcTilePosition(newTile), Quaternion.identity, transform);
         tile.GetComponent<Tile>().Initialize(tileData, newTile.x, newTile.y);
         Board.BoardGrid[newTile.x, newTile.y] = new GameTile(tile.GetInstanceID(), tileData.variant);
     }

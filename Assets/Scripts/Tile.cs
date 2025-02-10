@@ -9,9 +9,16 @@ public class Tile : MonoBehaviour
 
     private int _x;
     private int _y;
-    
-    private bool _isSwapping;
 
+    private bool _isSwapping;
+    private bool _isPlayMode;
+    
+    void Awake()
+    {
+        _isPlayMode = Application.isPlaying;
+        textPos.gameObject.SetActive(!_isPlayMode);
+    }
+    
     void OnEnable()
     {
         TileEvents.OnUpdateTilePosition += MoveTile;
@@ -58,6 +65,10 @@ public class Tile : MonoBehaviour
         _x = x;
         _y = y;
         gameObject.name = $"Tile ({_x}, {_y})";
-        textPos.text = $"{_x},{_y}";
+
+        if (!_isPlayMode)
+        {
+            textPos.text = $"{_x},{_y}";
+        }
     }
 }
