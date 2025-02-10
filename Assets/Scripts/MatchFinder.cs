@@ -20,17 +20,19 @@ public class MatchFinder : MonoBehaviour
         _boardManager = GetComponent<BoardManager>();
     }
 
-    public List<Vector2Int> GetSwapMatches(Vector2Int tileA, Vector2Int tileB)
+    public List<Vector2Int> GetMatches(HashSet<Vector2Int> changes)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
-        matches.UnionWith(GetMatches(_boardManager.Board.GetTile(tileA)?.Variant, tileA));
-        matches.UnionWith(GetMatches(_boardManager.Board.GetTile(tileB)?.Variant, tileB));
+        foreach (Vector2Int change in changes)
+        {
+            matches.UnionWith(GetTileMatches(_boardManager.Board.GetTile(change)?.Variant, change));
+        }
 
         return matches.ToList();
     }
     
-    private List<Vector2Int> GetMatches(string tileVariant, Vector2Int tilePosition)
+    public List<Vector2Int> GetTileMatches(string tileVariant, Vector2Int tilePosition)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 

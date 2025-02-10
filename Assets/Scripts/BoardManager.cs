@@ -20,14 +20,19 @@ public class MatchedTileEventArgs : EventArgs
 public class BoardManager : MonoBehaviour
 {
     public static event EventHandler<MatchedTileEventArgs> OnMatched;
+    public Board Board { get; private set; }
 
     [SerializeField] private float moveDuration = 0.05f;
     [SerializeField] private GameObject tilePrefab;
 
     private TilesCatalog _tileCatalog;
     private ScoreManager _scoreManager;
+    private MatchFinder _matchFinder;
 
-    public Board Board { get; private set; }
+    void Awake()
+    {
+        _matchFinder = GetComponent<MatchFinder>();
+    }
 
     public void Initialize(TilesCatalog catalog, string[,] grid)
     {
@@ -64,19 +69,34 @@ public class BoardManager : MonoBehaviour
         _scoreManager.AddScore(matches.Count * 10);
         matches.ForEach(RemoveTile);
         StartCoroutine(UpdateBoard());
-        Debug.Log(Board.BoardGrid);
-        // check new matches
     }
 
     private IEnumerator UpdateBoard()
     {
+        HashSet<Vector2Int> changes = new HashSet<Vector2Int>();
+
         List<Vector2Int> holes = Board.GetLowestRowHoles();
         while (holes.Count > 0)
         {
+            changes.UnionWith(holes);
             SpawnTiles(holes);
             holes.ForEach(DropTiles);
             holes = Board.GetLowestRowHoles();
             yield return new WaitForSeconds(moveDuration);
+        }
+
+        HandlePossibleMatches(changes);
+    }
+
+    private void HandlePossibleMatches(HashSet<Vector2Int> changes)
+    {
+        if (changes.Count == 0) return;
+
+        List<Vector2Int> matches = _matchFinder.GetMatches(changes);
+
+        if (matches.Count > 0)
+        {
+            HandleMatches(matches);
         }
     }
 
@@ -99,7 +119,7 @@ public class BoardManager : MonoBehaviour
             AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileCatalog.GetTileVariant());
         }
     }
-    
+
     private void UpdateTilePositions(Vector2Int tilePos, Vector2Int newPos)
     {
         TileEvents.UpdateTilePosition(this, Board.GetTile(tilePos, true).GameObjectId, newPos, moveDuration);

@@ -66,7 +66,7 @@ public class SwapTilesHandler : MonoBehaviour
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
-        List<Vector2Int> matches = _matchFinder.GetSwapMatches(draggedGridPosition, _selectedTilePos);
+        List<Vector2Int> matches = _matchFinder.GetMatches(new HashSet<Vector2Int>() {draggedGridPosition, _selectedTilePos});
 
         if (matches.Count == 0)
         {

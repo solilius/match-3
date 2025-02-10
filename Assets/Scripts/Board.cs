@@ -71,7 +71,6 @@ public class Board
             holes.Clear();
         }
 
-        holes.ForEach(h => Debug.Log(h));
         return holes;
     }
 
