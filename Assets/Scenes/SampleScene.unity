@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1878401837f642c89c54ecc656cc6b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDuration: 1
+  moveDuration: 0.1
   tilePrefab: {fileID: 6646725095160245019, guid: a57f89724634e3642a465d1cbc8458ce, type: 3}
 --- !u!1 &1602138548
 GameObject:

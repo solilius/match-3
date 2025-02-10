@@ -5,6 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
+    [SerializeField] private AudioSource popSound;
     [SerializeField] private TMP_Text textPos;
 
     private int _x;
@@ -12,13 +13,13 @@ public class Tile : MonoBehaviour
 
     private bool _isSwapping;
     private bool _isPlayMode;
-    
+
     void Awake()
     {
         _isPlayMode = Application.isPlaying;
         textPos.gameObject.SetActive(!_isPlayMode);
     }
-    
+
     void OnEnable()
     {
         TileEvents.OnUpdateTilePosition += MoveTile;
@@ -56,7 +57,8 @@ public class Tile : MonoBehaviour
     {
         if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            transform.DOScale(0f, e.Duration).OnComplete(() => { Destroy(gameObject); });
+            popSound.Play(); // move to sound manager (have delay of 1ms so sounds wont overlap)
+            transform.DOScale(0f, e.Duration).OnComplete(() => { Destroy(gameObject, popSound.clip.length); });
         }
     }
 
