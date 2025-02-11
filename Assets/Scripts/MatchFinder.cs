@@ -9,7 +9,7 @@ public class MatchFinder : MonoBehaviour
 
     private BoardManager _boardManager;
 
-    private readonly Vector2Int[] _searchVectors =
+    public readonly Vector2Int[] SearchVectors =
     {
         new(1, 0), // Horizontal
         new(0, 1), // Vertical
@@ -36,7 +36,7 @@ public class MatchFinder : MonoBehaviour
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
 
-        foreach (Vector2Int vector in _searchVectors)
+        foreach (Vector2Int vector in SearchVectors)
         {
             List<Vector2Int> currentMatches = new List<Vector2Int> { tilePosition };
 

@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Runtime.CompilerServices;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -30,13 +28,13 @@ public class Tile : MonoBehaviour
 
     void OnEnable()
     {
-        global::TileEvents.OnUpdateTilePosition += MoveTile;
+        TileEvents.OnUpdateTilePosition += MoveTile;
         BoardManager.OnMatched += OnMatch;
     }
 
     void OnDisable()
     {
-        global::TileEvents.OnUpdateTilePosition -= MoveTile;
+        TileEvents.OnUpdateTilePosition -= MoveTile;
         BoardManager.OnMatched -= OnMatch;
     }
 
@@ -63,7 +61,7 @@ public class Tile : MonoBehaviour
     {
         if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            PlaySound(popSound); // move to sound manager (have delay of 1ms so sounds wont overlap)
+            PlaySound(popSound); // move to sound manager (have delay of 1ms so sounds won't overlap)
             popEffect.Play();
             transform.DOScale(0f, e.Duration).OnComplete(() =>
             {
@@ -93,7 +91,6 @@ public class Tile : MonoBehaviour
 
     private void PlaySound(AudioClip clip)
     {
-        Debug.Log(clip.name);
         _audioSource.clip = clip;
         _audioSource.Play();
     }

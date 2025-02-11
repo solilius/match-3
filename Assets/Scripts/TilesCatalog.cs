@@ -23,7 +23,7 @@ public class TilesCatalog : MonoBehaviour
         return GetTileVariant(variants[UnityEngine.Random.Range(0, variants.Count)]);
     }
 
-    private List<string> GetAllVariants()
+    public List<string> GetAllVariants()
     {
         return _tiles.Select(tile => tile.variant).ToList();
     }

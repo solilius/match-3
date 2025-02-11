@@ -31,19 +31,21 @@ public class BoardManager : MonoBehaviour
     void Awake()
     {
         _matchFinder = GetComponent<MatchFinder>();
+        _tileGenerator = GetComponent<TileGenerator>();
     }
 
-    public void Initialize(TileGenerator tileGenerator, TileSO[,] grid)
+    public void Initialize(int size, Dictionary<GenLogic, float> procGenBoard)
     {
+        Board = new Board(size, size);
         _scoreManager = FindFirstObjectByType<ScoreManager>(); // get from params
-        Board = new Board(grid.GetLength(0), grid.GetLength(1));
-        _tileGenerator = tileGenerator;
 
-        for (int x = 0; x < grid.GetLength(0); x++)
+        for (int y = 0; y < Board.BoardHeight; y++)
         {
-            for (int y = 0; y < grid.GetLength(1); y++)
+            for (int x = 0; x < Board.BoardWidth; x++)
             {
-                AddTile(new Vector2Int(x, y), grid[x, y]);
+                Vector2Int position = new Vector2Int(x, y);
+                TileSO tile = _tileGenerator.GenerateTile(position, procGenBoard);
+                AddTile(position, tile);
             }
         }
     }
@@ -96,16 +98,17 @@ public class BoardManager : MonoBehaviour
             if (!lowestYPerX.TryGetValue(change.x, out int currentY) || change.y < currentY)
                 lowestYPerX[change.x] = change.y;
         }
-    
+
         var positions = new HashSet<Vector2Int>();
         foreach (var kvp in lowestYPerX)
         {
             for (int y = kvp.Value; y < Board.BoardHeight; y++)
                 positions.Add(new Vector2Int(kvp.Key, y));
         }
+
         return positions;
     }
-    
+
     private void HandlePossibleMatches(HashSet<Vector2Int> changes)
     {
         if (changes.Count == 0) return;
@@ -134,7 +137,6 @@ public class BoardManager : MonoBehaviour
     {
         foreach (var hole in holes)
         {
-            
             AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileGenerator.GenerateTile(hole));
         }
     }

@@ -10,48 +10,33 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
-        _tileGenerator = gameObject.AddComponent<TileGenerator>();
-        _boardManager = FindFirstObjectByType<BoardManager>();
     }
 
     void Start()
     {
-        _tileGenerator.Initialize(_tileCatalog, new Dictionary<GenLogic, float> { { GenLogic.Random, 1 } });
-        Dictionary<GenLogic, float> tileGenMap = new Dictionary<GenLogic, float> { { GenLogic.Random, 1 } };
-        _boardManager.Initialize(_tileGenerator, _tileGenerator.GenerateBoard(6, 6, tileGenMap));
+        _boardManager = FindFirstObjectByType<BoardManager>();
+        _tileGenerator = FindFirstObjectByType<TileGenerator>();
+        Initialize();
     }
 
-    // private string[,] TempInit()
-    // {
-    //     int rows = 6;
-    //     int cols = 6;
-    //     string[,] grid = new string[rows, cols];
-    //     string[] tileVariants = { "Banana", "Apple", "Pear", "Grape" };
-    //
-    //     for (int row = 0; row < rows; row++)
-    //     {
-    //         for (int col = 0; col < cols; col++)
-    //         {
-    //             string randomVariant = tileVariants[UnityEngine.Random.Range(0, tileVariants.Length)];
-    //             grid[row, col] = randomVariant;
-    //         }
-    //     }
-    //
-    //     return grid;
-    // }
-
-    private string[,] TempInit()
+    private void Initialize()
     {
-        string[,] grid = new string[6, 6]
+        int size = 6;
+        Dictionary<GenLogic, float> procGenTile = new Dictionary<GenLogic, float>
         {
-            { "Banana", "Grape", "Apple", "Pear", "Grape", "Apple" },
-            { "Banana", "Grape", "Apple", "Pear", "Banana", "Apple" },
-            { "Pear", "Pear", "Banana", "Apple", "Pear", "Grape" },
-            { "Apple", "Apple", "Pear", "Banana", "Apple", "Pear" },
-            { "Banana", "Grape", "Apple", "Pear", "Banana", "Apple" },
-            { "Pear", "Banana", "Pear", "Apple", "Pear", "Banana" }
+            { GenLogic.Match3, 0.1f },
+            { GenLogic.Match2, 0.2f },
+            { GenLogic.Random, 0.3f },
+            { GenLogic.NoMatch, 0.4f },
         };
-
-        return grid;
+        
+        Dictionary<GenLogic, float> procGenBoard = new Dictionary<GenLogic, float>
+        {
+            { GenLogic.NoMatch, 0.7f },
+            { GenLogic.Match2, 0.3f },
+        };
+        
+        _tileGenerator.Initialize(_tileCatalog, procGenTile);
+        _boardManager.Initialize(size, procGenBoard);
     }
 }
