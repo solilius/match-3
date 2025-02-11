@@ -16,4 +16,15 @@ public class TilesCatalog : MonoBehaviour
         if (variant == null) return _tiles[Random.Range(0, _tiles.Count)];
         return _tiles.Find(tile => tile.variant == variant);
     }
+
+    public TileSO GetRandomTile()
+    {
+        List<string> variants = GetAllVariants();
+        return GetTileVariant(variants[UnityEngine.Random.Range(0, variants.Count)]);
+    }
+
+    private List<string> GetAllVariants()
+    {
+        return _tiles.Select(tile => tile.variant).ToList();
+    }
 }

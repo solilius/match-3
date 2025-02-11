@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 
 public class MatchedTileEventArgs : EventArgs
@@ -25,7 +24,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private float moveDuration = 0.05f;
     [SerializeField] private GameObject tilePrefab;
 
-    private TilesCatalog _tileCatalog;
+    private TileGenerator _tileGenerator;
     private ScoreManager _scoreManager;
     private MatchFinder _matchFinder;
 
@@ -34,17 +33,17 @@ public class BoardManager : MonoBehaviour
         _matchFinder = GetComponent<MatchFinder>();
     }
 
-    public void Initialize(TilesCatalog catalog, string[,] grid)
+    public void Initialize(TileGenerator tileGenerator, TileSO[,] grid)
     {
         _scoreManager = FindFirstObjectByType<ScoreManager>(); // get from params
         Board = new Board(grid.GetLength(0), grid.GetLength(1));
-        _tileCatalog = catalog;
+        _tileGenerator = tileGenerator;
 
         for (int x = 0; x < grid.GetLength(0); x++)
         {
             for (int y = 0; y < grid.GetLength(1); y++)
             {
-                AddTile(new Vector2Int(x, y), _tileCatalog.GetTileVariant(grid[x, y]));
+                AddTile(new Vector2Int(x, y), grid[x, y]);
             }
         }
     }
@@ -135,7 +134,8 @@ public class BoardManager : MonoBehaviour
     {
         foreach (var hole in holes)
         {
-            AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileCatalog.GetTileVariant());
+            
+            AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileGenerator.GenerateTile(hole));
         }
     }
 

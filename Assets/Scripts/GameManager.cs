@@ -1,23 +1,26 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    
     private BoardManager _boardManager;
-    
-    private TilesCatalog tileCatalog;
-    
+    private TileGenerator _tileGenerator;
+    private TilesCatalog _tileCatalog;
+
     private void Awake()
-    { 
-        tileCatalog = gameObject.AddComponent<TilesCatalog>();
+    {
+        _tileCatalog = gameObject.AddComponent<TilesCatalog>();
+        _tileGenerator = gameObject.AddComponent<TileGenerator>();
         _boardManager = FindFirstObjectByType<BoardManager>();
     }
 
     void Start()
     {
-        _boardManager.Initialize(tileCatalog, TempInit());
+        _tileGenerator.Initialize(_tileCatalog, new Dictionary<GenLogic, float> { { GenLogic.Random, 1 } });
+        Dictionary<GenLogic, float> tileGenMap = new Dictionary<GenLogic, float> { { GenLogic.Random, 1 } };
+        _boardManager.Initialize(_tileGenerator, _tileGenerator.GenerateBoard(6, 6, tileGenMap));
     }
-    
+
     // private string[,] TempInit()
     // {
     //     int rows = 6;
@@ -36,7 +39,7 @@ public class GameManager : MonoBehaviour
     //
     //     return grid;
     // }
-    
+
     private string[,] TempInit()
     {
         string[,] grid = new string[6, 6]
