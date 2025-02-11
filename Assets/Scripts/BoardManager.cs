@@ -137,7 +137,8 @@ public class BoardManager : MonoBehaviour
     {
         foreach (var hole in holes)
         {
-            AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileGenerator.GenerateTile(hole));
+            Vector2Int position = new Vector2Int(hole.x, Board.BoardHeight - GetNumOfTilesInColumn(hole.x));
+            AddTile(new Vector2Int(hole.x, Board.SpawnerRow), _tileGenerator.GenerateTile(position));
         }
     }
 
@@ -152,5 +153,19 @@ public class BoardManager : MonoBehaviour
         // Make the spawn at top left instead of center
         // this way the area of the tile is (0-1, 0-1, 0) instead of (-0.5-0.5, -0.5-0.5, 0)
         return new Vector3(position.x, position.y, 0f) + new Vector3(0.5f, -0.5f, 0f);
+    }
+
+    private int GetNumOfTilesInColumn(int column)
+    {
+        int counter = 0;
+        for (int y = 0; y < Board.BoardHeight; y++)
+        {
+            if (Board.BoardGrid[column, y] != null) // Check if the value is not null
+            {
+                counter++;
+            }
+        }
+        
+        return counter;
     }
 }
