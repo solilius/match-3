@@ -42,8 +42,8 @@ public class BoardManager : MonoBehaviour
             for (int x = 0; x < Board.BoardWidth; x++)
             {
                 Vector2Int position = new Vector2Int(x, y);
-                TileSO tile = _tileGenerator.GenerateTile(position, procGenBoard);
-                AddTile(position, tile);
+                TileSO tileData = _tileGenerator.GenerateTile(position, procGenBoard);
+                AddTile(position, tileData);
             }
         }
     }

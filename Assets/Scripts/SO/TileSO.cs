@@ -13,4 +13,7 @@ public abstract class TileSO : ScriptableObject
     public string variant;
     public Sprite sprite;
     public Color popEffectColor;
+    public AudioClip swapSound;
+    public AudioClip swapBackSound;
+    public AudioClip popSound;
 }

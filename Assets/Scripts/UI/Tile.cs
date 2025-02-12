@@ -5,11 +5,12 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
-    [SerializeField] private AudioClip popSound;
-    [SerializeField] private AudioClip swapSound;
-    [SerializeField] private AudioClip swapBackSound;
     [SerializeField] private TMP_Text textPos;
     [SerializeField] private ParticleSystem popEffect;
+    
+    private AudioClip _popSound;
+    private AudioClip _swapSound;
+    private AudioClip _swapBackSound;
 
     private int _x;
     private int _y;
@@ -43,6 +44,9 @@ public class Tile : MonoBehaviour
     public void Initialize(TileSO data, int x, int y)
     {
         tileSprite.sprite = data.sprite;
+        _popSound = data.popSound;
+        _swapSound = data.swapSound;
+        _swapBackSound = data.swapBackSound;
         SetPosition(x, y);
         SetEffectColor(data.popEffectColor);
     }
@@ -51,8 +55,8 @@ public class Tile : MonoBehaviour
     {
         if (e.GameObjectId != gameObject.GetInstanceID()) return;
 
-        if (e.IsSwap && e.IsSwapBack) PlaySound(swapBackSound);
-        else if (e.IsSwap) PlaySound(swapSound);
+        if (e.IsSwap && e.IsSwapBack) PlaySound(_swapBackSound);
+        else if (e.IsSwap) PlaySound(_swapSound);
 
         Vector3 targetPosition = BoardManager.CalcTilePosition(e.NewPosition);
         transform.DOMove(targetPosition, e.Duration).SetEase(Ease.Linear)
@@ -70,7 +74,7 @@ public class Tile : MonoBehaviour
     {
         if (e.GameObjectId == gameObject.GetInstanceID())
         {
-            PlaySound(popSound); // move to sound manager (have delay of 1ms so sounds won't overlap)
+            PlaySound(_popSound); // move to sound manager (have delay of 1ms so sounds won't overlap)
             popEffect.Play();
             transform.DOScale(0f, e.Duration).OnComplete(() =>
             {
