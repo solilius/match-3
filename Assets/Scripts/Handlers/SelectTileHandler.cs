@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectTileHandler : MonoBehaviour
@@ -6,19 +7,22 @@ public class SelectTileHandler : MonoBehaviour
     [SerializeField] private float pressedScale = 1.1f;
 
     private BoardManager _boardManager;
+    private MatchHandler _matchHandler;
+
     private float? _pressStartTime;
     private Vector2Int? _pressedTile;
 
     void Awake()
     {
         _boardManager = GetComponent<BoardManager>();
+        _matchHandler = GetComponent<MatchHandler>();
     }
 
     void Update()
     {
         HandleSelect();
     }
-    
+
     private void HandleSelect()
     {
         Vector2 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -36,8 +40,15 @@ public class SelectTileHandler : MonoBehaviour
 
         if (_pressStartTime != null && _pressedTile != null && Time.time - _pressStartTime > longPressThreshold)
         {
-            HandleCanceledLongPress(_pressedTile.Value);
+            HandlePowerTriggered(_pressedTile.Value);
         }
+    }
+
+    private void HandlePowerTriggered(Vector2Int pressedTile)
+    {
+        HandleCanceledLongPress(pressedTile);
+        HashSet<Vector2Int> matches = _matchHandler.GetPowerMatches(pressedTile);
+        if (matches.Count > 0) _matchHandler.HandleMatches(matches);
     }
 
     private void HandleLongPress(Vector2Int gridPosition)

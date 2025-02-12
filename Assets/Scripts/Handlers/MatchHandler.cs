@@ -44,7 +44,7 @@ public class MatchHandler : MonoBehaviour
             HandleMatches(matches);
         }
     }
-    
+
     public HashSet<Vector2Int> GetMatches(HashSet<Vector2Int> changes)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
@@ -62,8 +62,15 @@ public class MatchHandler : MonoBehaviour
 
     public HashSet<Vector2Int> GetPowerMatches(Vector2Int position)
     {
-        string powerUpVariant = _boardManager.Board.GetTile(position)?.Data.variant;
-        return new HashSet<Vector2Int>();
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
+        TileSO tileData = _boardManager.Board.GetTile(position)?.Data;
+
+        if (tileData?.tileType == TileType.Power)
+        {
+            matches = GetPowerUpMatch((PowerSO)tileData, position);
+        }
+
+        return matches;
     }
 
     public List<Vector2Int> GetTileMatches(string tileVariant, Vector2Int tilePosition)
@@ -100,6 +107,28 @@ public class MatchHandler : MonoBehaviour
         }
 
         return matches.OrderBy(v => v.y).ThenBy(v => v.x).ToList();
+    }
+
+    private HashSet<Vector2Int> GetPowerUpMatch(PowerSO powerUp, Vector2Int position)
+    {
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>() { position };
+
+        foreach (Vector2Int vector in powerUp.popDirections)
+        {
+            for (int x = 1; x <= powerUp.popRadius; x++)
+            {
+                for (int y = 1; y <= powerUp.popRadius; y++)
+                {
+                    Vector2Int checkPosition = position + vector * new Vector2Int(x, y);
+                    if (_boardManager.Board.GetTile(checkPosition)?.Data.tileType == TileType.Fruit)
+                    {
+                        matches.Add(checkPosition);
+                    }
+                }
+            }
+        }
+
+        return matches;
     }
 
     private bool IsMatchingTile(Vector2Int checkPosition, string tileVariant)
