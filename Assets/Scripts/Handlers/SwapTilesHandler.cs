@@ -8,7 +8,7 @@ public class SwapTilesHandler : MonoBehaviour
     [SerializeField] private float swapDuration = .5f;
 
     private BoardManager _boardManager;
-    private MatchFinder _matchFinder;
+    private MatchHandler _matchHandler;
 
     private bool _isDragging;
     private Vector2 _startDragPosition;
@@ -17,7 +17,7 @@ public class SwapTilesHandler : MonoBehaviour
     void Awake()
     {
         _boardManager = GetComponent<BoardManager>();
-        _matchFinder = GetComponent<MatchFinder>();
+        _matchHandler = GetComponent<MatchHandler>();
     }
 
     void Update()
@@ -68,7 +68,7 @@ public class SwapTilesHandler : MonoBehaviour
 
         yield return new WaitForSeconds(swapDuration); // swap back without delay
 
-        HashSet<Vector2Int> matches = _matchFinder.GetMatches(new HashSet<Vector2Int>()
+        HashSet<Vector2Int> matches = _matchHandler.GetMatches(new HashSet<Vector2Int>()
             { draggedGridPosition, _selectedTilePos });
 
         if (matches.Count == 0)
@@ -81,7 +81,7 @@ public class SwapTilesHandler : MonoBehaviour
         }
         else
         {
-            _boardManager.HandleMatches(matches);
+            _matchHandler.HandleMatches(matches);
         }
     }
 

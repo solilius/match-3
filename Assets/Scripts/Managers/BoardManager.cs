@@ -25,19 +25,17 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private GameObject tilePrefab;
 
     private TileGenerator _tileGenerator;
-    private ScoreManager _scoreManager;
-    private MatchFinder _matchFinder;
+    private MatchHandler _matchHandler;
 
     void Awake()
     {
-        _matchFinder = GetComponent<MatchFinder>();
+        _matchHandler = GetComponent<MatchHandler>();
         _tileGenerator = GetComponent<TileGenerator>();
     }
 
     public void Initialize(int size, Dictionary<GenLogic, float> procGenBoard)
     {
         Board = new Board(size, size);
-        _scoreManager = FindFirstObjectByType<ScoreManager>(); // get from params
 
         for (int y = 0; y < Board.BoardHeight; y++)
         {
@@ -57,21 +55,14 @@ public class BoardManager : MonoBehaviour
         Board.BoardGrid[newTile.x, newTile.y] = new GameTile(tile.GetInstanceID(), tileData);
     }
     
-    private void RemoveTile(Vector2Int tilePosition)
+    public void RemoveTile(Vector2Int tilePosition)
     {
         int gameObjectId = Board.GetTile(tilePosition).GameObjectId;
         Board.RemoveTile(tilePosition);
         OnMatched?.Invoke(this, new MatchedTileEventArgs(gameObjectId, moveDuration));
     }
 
-    public void HandleMatches(HashSet<Vector2Int> matches)
-    {
-        _scoreManager.AddScore(matches.Count * 10);
-        matches.ToList().ForEach(RemoveTile);
-        StartCoroutine(UpdateBoard());
-    }
-
-    private IEnumerator UpdateBoard()
+    public IEnumerator UpdateBoard()
     {
         HashSet<Vector2Int> changes = new HashSet<Vector2Int>();
 
@@ -86,7 +77,7 @@ public class BoardManager : MonoBehaviour
         }
 
         HashSet<Vector2Int> calculatedChangedPositions = CalculateChangedPositions(changes);
-        HandlePossibleMatches(calculatedChangedPositions);
+        _matchHandler.HandlePossibleMatches(calculatedChangedPositions);
     }
 
     private HashSet<Vector2Int> CalculateChangedPositions(HashSet<Vector2Int> changes)
@@ -106,18 +97,6 @@ public class BoardManager : MonoBehaviour
         }
 
         return positions;
-    }
-
-    private void HandlePossibleMatches(HashSet<Vector2Int> changes)
-    {
-        if (changes.Count == 0) return;
-
-        HashSet<Vector2Int> matches = _matchFinder.GetMatches(changes);
-
-        if (matches.Count > 0)
-        {
-            HandleMatches(matches);
-        }
     }
 
     private void DropTiles(Vector2Int hole)

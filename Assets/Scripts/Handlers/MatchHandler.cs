@@ -3,11 +3,12 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MatchFinder : MonoBehaviour
+public class MatchHandler : MonoBehaviour
 {
     [SerializeField] private int minimumMatch = 3;
 
     private BoardManager _boardManager;
+    private ScoreManager _scoreManager;
 
     public readonly Vector2Int[] SearchVectors =
     {
@@ -20,6 +21,30 @@ public class MatchFinder : MonoBehaviour
         _boardManager = GetComponent<BoardManager>();
     }
 
+    void Start()
+    {
+        _scoreManager = FindFirstObjectByType<ScoreManager>(); // get from params
+    }
+
+    public void HandleMatches(HashSet<Vector2Int> matches)
+    {
+        _scoreManager.AddScore(matches.Count * 10);
+        matches.ToList().ForEach(_boardManager.RemoveTile);
+        StartCoroutine(_boardManager.UpdateBoard());
+    }
+
+    public void HandlePossibleMatches(HashSet<Vector2Int> changes)
+    {
+        if (changes.Count == 0) return;
+
+        HashSet<Vector2Int> matches = GetMatches(changes);
+
+        if (matches.Count > 0)
+        {
+            HandleMatches(matches);
+        }
+    }
+    
     public HashSet<Vector2Int> GetMatches(HashSet<Vector2Int> changes)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
@@ -27,8 +52,8 @@ public class MatchFinder : MonoBehaviour
         foreach (Vector2Int change in changes)
         {
             TileSO tile = _boardManager.Board.GetTile(change)?.Data;
-            if(tile?.tileType != TileType.Fruit) continue;
-            
+            if (tile?.tileType != TileType.Fruit) continue;
+
             matches.UnionWith(GetTileMatches(tile?.variant, change));
         }
 
@@ -40,7 +65,7 @@ public class MatchFinder : MonoBehaviour
         string powerUpVariant = _boardManager.Board.GetTile(position)?.Data.variant;
         return new HashSet<Vector2Int>();
     }
-    
+
     public List<Vector2Int> GetTileMatches(string tileVariant, Vector2Int tilePosition)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
@@ -59,10 +84,12 @@ public class MatchFinder : MonoBehaviour
                 Vector2Int checkPositionA = tilePosition + vectorModifier;
                 Vector2Int checkPositionB = tilePosition + vectorModifier * -1;
 
-                if (isForwardVectorRunning && IsMatchingTile(checkPositionA, tileVariant)) currentMatches.Add(checkPositionA);
+                if (isForwardVectorRunning && IsMatchingTile(checkPositionA, tileVariant))
+                    currentMatches.Add(checkPositionA);
                 else isForwardVectorRunning = false;
 
-                if (isBackwardVectorRunning && IsMatchingTile(checkPositionB, tileVariant)) currentMatches.Add(checkPositionB);
+                if (isBackwardVectorRunning && IsMatchingTile(checkPositionB, tileVariant))
+                    currentMatches.Add(checkPositionB);
                 else isBackwardVectorRunning = false;
 
                 if (isForwardVectorRunning || isBackwardVectorRunning) index++;

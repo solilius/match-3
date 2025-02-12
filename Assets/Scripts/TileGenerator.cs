@@ -16,7 +16,7 @@ public enum GenLogic
 public class TileGenerator : MonoBehaviour
 {
     private TilesCatalog _tileCatalog;
-    private MatchFinder _matchFinder;
+    private MatchHandler _matchHandler;
 
     private BoardManager _boardManager;
 
@@ -26,7 +26,7 @@ public class TileGenerator : MonoBehaviour
     public void Initialize(TilesCatalog catalog, Dictionary<GenLogic, float> tileGenMap)
     {
         _boardManager = GetComponent<BoardManager>();
-        _matchFinder = GetComponent<MatchFinder>();
+        _matchHandler = GetComponent<MatchHandler>();
 
         _tileCatalog = catalog;
         _tileGenMap = tileGenMap;
@@ -93,7 +93,7 @@ public class TileGenerator : MonoBehaviour
 
         foreach (string variant in tilesAround)
         {
-            if (_matchFinder.GetTileMatches(variant, position).Count >= 3)
+            if (_matchHandler.GetTileMatches(variant, position).Count >= 3)
             {
                 willMatch3.Add(variant);
             }
@@ -119,8 +119,8 @@ public class TileGenerator : MonoBehaviour
 
         foreach (string variant in tilesAround)
         {
-            _matchFinder.GetTileMatches(variant, position);
-            if (_matchFinder.GetTileMatches(variant, position).Count >= 3)
+            _matchHandler.GetTileMatches(variant, position);
+            if (_matchHandler.GetTileMatches(variant, position).Count >= 3)
             {
                 return _tileCatalog.GetTileVariant(variant);
             }
@@ -134,7 +134,7 @@ public class TileGenerator : MonoBehaviour
     {
         HashSet<string> tilesAround = new HashSet<string>();
 
-        foreach (Vector2Int vector in _matchFinder.SearchVectors)
+        foreach (Vector2Int vector in _matchHandler.SearchVectors)
         {
             GameTile tile = _boardManager.Board.GetTile(new Vector2Int(position.x + vector.x, position.y + vector.y));
             if (tile != null) tilesAround.Add(tile.Data.variant);
