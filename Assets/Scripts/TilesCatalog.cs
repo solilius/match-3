@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class TilesCatalog : MonoBehaviour
 {
@@ -8,9 +9,9 @@ public class TilesCatalog : MonoBehaviour
     private List<FruitSO> _fruitTiles;
     private List<PowerSO> _powerTiles;
 
-    void Awake()
+    public void Initialize(List<TileSO> tiles)
     {
-        _tiles = Resources.LoadAll<TileSO>("ScriptableObjects/Tiles").ToList();
+        _tiles = tiles;
         _fruitTiles = _tiles.Where(t => t.tileType == TileType.Fruit).Cast<FruitSO>().ToList();
         _powerTiles = _tiles.Where(t => t.tileType == TileType.Power).Cast<PowerSO>().ToList();
     }
