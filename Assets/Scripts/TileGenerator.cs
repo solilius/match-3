@@ -137,10 +137,10 @@ public class TileGenerator : MonoBehaviour
         foreach (Vector2Int vector in _matchFinder.SearchVectors)
         {
             GameTile tile = _boardManager.Board.GetTile(new Vector2Int(position.x + vector.x, position.y + vector.y));
-            if (tile != null) tilesAround.Add(tile.Variant);
+            if (tile != null) tilesAround.Add(tile.Data.variant);
 
             tile = _boardManager.Board.GetTile(new Vector2Int(position.x - vector.x, position.y - vector.y));
-            if (tile != null && tile.TileType == TileType.Fruit) tilesAround.Add(tile.Variant);
+            if (tile != null && tile.Data.tileType == TileType.Fruit) tilesAround.Add(tile.Data.variant);
         }
 
         return tilesAround;

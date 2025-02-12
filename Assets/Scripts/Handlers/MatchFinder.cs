@@ -26,7 +26,10 @@ public class MatchFinder : MonoBehaviour
 
         foreach (Vector2Int change in changes)
         {
-            matches.UnionWith(GetTileMatches(_boardManager.Board.GetTile(change)?.Variant, change));
+            TileSO tile = _boardManager.Board.GetTile(change)?.Data;
+            if(tile?.tileType != TileType.Fruit) continue;
+            
+            matches.UnionWith(GetTileMatches(tile?.variant, change));
         }
 
         return matches;
@@ -34,7 +37,7 @@ public class MatchFinder : MonoBehaviour
 
     public HashSet<Vector2Int> GetPowerMatches(Vector2Int position)
     {
-        string powerUpVariant = _boardManager.Board.GetTile(position)?.Variant;
+        string powerUpVariant = _boardManager.Board.GetTile(position)?.Data.variant;
         return new HashSet<Vector2Int>();
     }
     
@@ -74,6 +77,6 @@ public class MatchFinder : MonoBehaviour
 
     private bool IsMatchingTile(Vector2Int checkPosition, string tileVariant)
     {
-        return _boardManager.Board.GetTile(checkPosition)?.Variant == tileVariant;
+        return _boardManager.Board.GetTile(checkPosition)?.Data.variant == tileVariant;
     }
 }

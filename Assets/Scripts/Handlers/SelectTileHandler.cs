@@ -61,6 +61,6 @@ public class SelectTileHandler : MonoBehaviour
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
         GameTile tile = _boardManager.Board.GetTile(gridPosition);
-        return tile?.TileType == TileType.Power;
+        return tile?.Data.tileType == TileType.Power;
     }
 }

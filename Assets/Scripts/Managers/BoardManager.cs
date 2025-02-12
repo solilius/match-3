@@ -54,7 +54,7 @@ public class BoardManager : MonoBehaviour
     {
         GameObject tile = Instantiate(tilePrefab, CalcTilePosition(newTile), Quaternion.identity, transform);
         tile.GetComponent<Tile>().Initialize(tileData, newTile.x, newTile.y);
-        Board.BoardGrid[newTile.x, newTile.y] = new GameTile(tile.GetInstanceID(), tileData.tileType, tileData.variant);
+        Board.BoardGrid[newTile.x, newTile.y] = new GameTile(tile.GetInstanceID(), tileData);
     }
     
     private void RemoveTile(Vector2Int tilePosition)

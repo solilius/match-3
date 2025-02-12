@@ -102,8 +102,7 @@ public class SwapTilesHandler : MonoBehaviour
         int x = Mathf.FloorToInt(position.x);
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
-        GameTile tile = _boardManager.Board.GetTile(gridPosition);
-        return tile?.TileType == TileType.Fruit;
+        return _boardManager.Board.GetTile(gridPosition) != null;
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)
