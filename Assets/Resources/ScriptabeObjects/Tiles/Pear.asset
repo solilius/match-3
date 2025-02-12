@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e41aa1a53c5542f7a4ba31075c6bbbf8, type: 3}
+  m_Name: Pear
+  m_EditorClassIdentifier: 
+  tileType: 0
+  variant: Pear
+  sprite: {fileID: 21300000, guid: 50dd2e8acaa7426438d693e39eb73026, type: 3}
+  popEffectColor: {r: 0.3019758, g: 0.735849, b: 0.32607988, a: 1}
+  swapSound: {fileID: 8300000, guid: e25cbe6ab735be1498ca37021f7b9b3d, type: 3}
+  swapBackSound: {fileID: 8300000, guid: 57ea5312b40d63048a32448babc2703d, type: 3}
+  popSound: {fileID: 8300000, guid: 516e3769910778840934d1f94de175f6, type: 3}
+  score: 10

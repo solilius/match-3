@@ -4945,9 +4945,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSprite: {fileID: 4655688061774127576}
-  popSound: {fileID: 8300000, guid: 516e3769910778840934d1f94de175f6, type: 3}
-  swapSound: {fileID: 8300000, guid: e25cbe6ab735be1498ca37021f7b9b3d, type: 3}
-  swapBackSound: {fileID: 8300000, guid: 57ea5312b40d63048a32448babc2703d, type: 3}
   textPos: {fileID: 671048306702755673}
   popEffect: {fileID: 6078701104063301105}
 --- !u!212 &6096292733668470778
@@ -4993,7 +4990,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
