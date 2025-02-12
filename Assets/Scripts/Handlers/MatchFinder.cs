@@ -31,6 +31,12 @@ public class MatchFinder : MonoBehaviour
 
         return matches;
     }
+
+    public HashSet<Vector2Int> GetPowerMatches(Vector2Int position)
+    {
+        string powerUpVariant = _boardManager.Board.GetTile(position)?.Variant;
+        return new HashSet<Vector2Int>();
+    }
     
     public List<Vector2Int> GetTileMatches(string tileVariant, Vector2Int tilePosition)
     {

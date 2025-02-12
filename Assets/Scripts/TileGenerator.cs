@@ -6,7 +6,8 @@ using UnityEngine;
 public enum GenLogic
 {
     Random,
-    Special,
+    RandomFruit,
+    RandomPower,
     NoMatch,
     Match2,
     Match3,
@@ -32,7 +33,8 @@ public class TileGenerator : MonoBehaviour
         _genLogicFunctions = new Dictionary<GenLogic, Func<Vector2Int, TileSO>>
         {
             { GenLogic.Random, GetRandomTile },
-            { GenLogic.Special, GetRandomTile },
+            { GenLogic.RandomFruit, GetRandomFruitTile },
+            { GenLogic.RandomPower, GetRandomPowerTile },
             { GenLogic.NoMatch, GetNoMatchTile },
             { GenLogic.Match2, GetMatch2Tile },
             { GenLogic.Match3, GetMatch3Tile },
@@ -55,27 +57,38 @@ public class TileGenerator : MonoBehaviour
         }
 
         Debug.Log($"Failed to generate tile from map position: {position} value: {randomValue}");
-        return GetRandomTile(position);
+        return GetRandomFruitTile(position);
     }
 
     private TileSO GetRandomTile(Vector2Int position = new Vector2Int())
     {
         return _tileCatalog.GetRandomTile();
     }
+    
+    private TileSO GetRandomFruitTile(Vector2Int position = new Vector2Int())
+    {
+        return _tileCatalog.GetRandomTile(TileType.Fruit);
+    }
+    
+    private TileSO GetRandomPowerTile(Vector2Int position = new Vector2Int())
+    {
+        return _tileCatalog.GetRandomTile(TileType.Power);
+    }
 
     private TileSO GetNoMatchTile(Vector2Int position)
     {
-        HashSet<string> tilesAround = GetTilesAround(position);
-        List<string> allVariants = _tileCatalog.GetAllVariants();
+        HashSet<string> tilesAround = GetFruitsAround(position);
+        List<string> allVariants = _tileCatalog.GetFruitVariants();
         List<string> notAround = allVariants.Where(variant => !tilesAround.Contains(variant)).ToList();
 
+        if (notAround.Count == 0) return GetRandomFruitTile();
         string variant = notAround.ElementAt(UnityEngine.Random.Range(0, notAround.Count));
         return _tileCatalog.GetTileVariant(variant);
     }
 
     private TileSO GetMatch2Tile(Vector2Int position)
     {
-        HashSet<string> tilesAround = GetTilesAround(position);
+        HashSet<string> tilesAround = GetFruitsAround(position);
         HashSet<string> willMatch3 = new HashSet<string>();
 
         foreach (string variant in tilesAround)
@@ -89,7 +102,7 @@ public class TileGenerator : MonoBehaviour
         List<string> match2 = tilesAround.Where(variant => !willMatch3.Contains(variant)).ToList();
         if (match2.Count == 0)
         {
-            List<string> allVariants = _tileCatalog.GetAllVariants();
+            List<string> allVariants = _tileCatalog.GetFruitVariants();
             List<string> notAround = allVariants.Where(variant => !tilesAround.Contains(variant)).ToList();
 
             string variant = notAround.ElementAt(UnityEngine.Random.Range(0, notAround.Count));
@@ -102,7 +115,7 @@ public class TileGenerator : MonoBehaviour
 
     private TileSO GetMatch3Tile(Vector2Int position)
     {
-        HashSet<string> tilesAround = GetTilesAround(position);
+        HashSet<string> tilesAround = GetFruitsAround(position);
 
         foreach (string variant in tilesAround)
         {
@@ -117,7 +130,7 @@ public class TileGenerator : MonoBehaviour
         return _tileCatalog.GetTileVariant(randomVariant);
     }
 
-    private HashSet<string> GetTilesAround(Vector2Int position)
+    private HashSet<string> GetFruitsAround(Vector2Int position)
     {
         HashSet<string> tilesAround = new HashSet<string>();
 
@@ -127,7 +140,7 @@ public class TileGenerator : MonoBehaviour
             if (tile != null) tilesAround.Add(tile.Variant);
 
             tile = _boardManager.Board.GetTile(new Vector2Int(position.x - vector.x, position.y - vector.y));
-            if (tile != null) tilesAround.Add(tile.Variant);
+            if (tile != null && tile.TileType == TileType.Fruit) tilesAround.Add(tile.Variant);
         }
 
         return tilesAround;

@@ -5,26 +5,36 @@ using UnityEngine;
 public class TilesCatalog : MonoBehaviour
 {
     private List<TileSO> _tiles;
+    private List<FruitSO> _fruitTiles;
+    private List<PowerSO> _powerTiles;
 
     void Awake()
     {
-        _tiles = Resources.LoadAll<TileSO>("ScriptableObjects/Fruits").ToList();
+        _tiles = Resources.LoadAll<TileSO>("ScriptableObjects/Tiles").ToList();
+        _fruitTiles = _tiles.Where(t => t.tileType == TileType.Fruit).Cast<FruitSO>().ToList();
+        _powerTiles = _tiles.Where(t => t.tileType == TileType.Power).Cast<PowerSO>().ToList();
     }
 
-    public TileSO GetTileVariant(string variant = null)
+    public TileSO GetTileVariant(string variant)
     {
-        if (variant == null) return _tiles[Random.Range(0, _tiles.Count)];
         return _tiles.Find(tile => tile.variant == variant);
     }
-
-    public TileSO GetRandomTile()
+    
+    public TileSO GetRandomTile(TileType? type = null)
     {
-        List<string> variants = GetAllVariants();
-        return GetTileVariant(variants[UnityEngine.Random.Range(0, variants.Count)]);
+        switch (type)
+        {
+            case TileType.Fruit:
+                return _fruitTiles[Random.Range(0, _fruitTiles.Count)];
+            case TileType.Power:
+                return _powerTiles[Random.Range(0, _powerTiles.Count)];
+            default:
+                return _tiles[Random.Range(0, _tiles.Count)];
+        }
     }
 
-    public List<string> GetAllVariants()
+    public List<string> GetFruitVariants()
     {
-        return _tiles.Select(tile => tile.variant).ToList();
+        return _fruitTiles.Select(tile => tile.variant).ToList();
     }
 }

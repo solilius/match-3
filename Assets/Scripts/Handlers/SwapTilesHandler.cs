@@ -14,7 +14,7 @@ public class SwapTilesHandler : MonoBehaviour
     private Vector2 _startDragPosition;
     private Vector2Int _selectedTilePos;
 
-    void Start()
+    void Awake()
     {
         _boardManager = GetComponent<BoardManager>();
         _matchFinder = GetComponent<MatchFinder>();
@@ -102,9 +102,8 @@ public class SwapTilesHandler : MonoBehaviour
         int x = Mathf.FloorToInt(position.x);
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
-
-        return _boardManager.Board.IsInGrid(x, y) &&
-               _boardManager.Board.BoardGrid[gridPosition.x, gridPosition.y] != null;
+        GameTile tile = _boardManager.Board.GetTile(gridPosition);
+        return tile?.TileType == TileType.Fruit;
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)

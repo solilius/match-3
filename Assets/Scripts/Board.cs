@@ -4,11 +4,13 @@ using UnityEngine;
 public class GameTile
 {
     public int GameObjectId { get; }
+    public TileType TileType { get; }
     public string Variant { get; }
 
-    public GameTile(int gameObjectId, string variant)
+    public GameTile(int gameObjectId, TileType tileType, string variant)
     {
         GameObjectId = gameObjectId;
+        TileType = tileType;
         Variant = variant;
     }
 }

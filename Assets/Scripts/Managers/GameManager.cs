@@ -24,15 +24,17 @@ public class GameManager : MonoBehaviour
         int size = 6;
         Dictionary<GenLogic, float> procGenTile = new Dictionary<GenLogic, float>
         {
+            { GenLogic.RandomPower, 0.05f },
             { GenLogic.Match3, 0.1f },
             { GenLogic.Match2, 0.2f },
-            { GenLogic.Random, 0.3f },
-            { GenLogic.NoMatch, 0.4f },
+            { GenLogic.RandomFruit, 0.3f },
+            { GenLogic.NoMatch, 0.45f },
         };
         
         Dictionary<GenLogic, float> procGenBoard = new Dictionary<GenLogic, float>
         {
-            { GenLogic.NoMatch, 0.7f },
+            { GenLogic.RandomPower, 0.05f },
+            { GenLogic.NoMatch, 0.65f },
             { GenLogic.Match2, 0.3f },
         };
         

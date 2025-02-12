@@ -29,13 +29,15 @@ public class Tile : MonoBehaviour
     void OnEnable()
     {
         TileEvents.OnUpdateTilePosition += MoveTile;
-        BoardManager.OnMatched += OnMatch;
+        TileEvents.OnPowerTilePressed += PowerTilePressed;
+        BoardManager.OnMatched += Match;
     }
 
     void OnDisable()
     {
         TileEvents.OnUpdateTilePosition -= MoveTile;
-        BoardManager.OnMatched -= OnMatch;
+        TileEvents.OnPowerTilePressed -= PowerTilePressed;
+        BoardManager.OnMatched -= Match;
     }
 
     public void Initialize(TileSO data, int x, int y)
@@ -57,7 +59,14 @@ public class Tile : MonoBehaviour
             .OnComplete(() => SetPosition(e.NewPosition.x, e.NewPosition.y));
     }
 
-    private void OnMatch(object sender, MatchedTileEventArgs e)
+    private void PowerTilePressed(object sender, PowerTilePressedEventArgs e)
+    {
+        if (e.GameObjectId != gameObject.GetInstanceID()) return;
+        transform.DOKill();
+        transform.DOScale(e.ScaleTo, e.Duration).SetEase(Ease.Unset);
+    }
+    
+    private void Match(object sender, MatchedTileEventArgs e)
     {
         if (e.GameObjectId == gameObject.GetInstanceID())
         {
