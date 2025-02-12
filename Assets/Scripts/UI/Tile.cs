@@ -66,7 +66,7 @@ public class Tile : MonoBehaviour
     private void PowerTilePressed(object sender, PowerTilePressedEventArgs e)
     {
         if (e.GameObjectId != gameObject.GetInstanceID()) return;
-        transform.DOKill();
+        transform.DOKill(true );
         transform.DOScale(e.ScaleTo, e.Duration).SetEase(Ease.Unset);
     }
     

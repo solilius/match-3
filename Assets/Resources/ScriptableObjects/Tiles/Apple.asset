@@ -16,4 +16,7 @@ MonoBehaviour:
   variant: Apple
   sprite: {fileID: 21300000, guid: b7481a4c424715542a70ac1efc7468db, type: 3}
   popEffectColor: {r: 0.8113208, g: 0.10332859, b: 0.10332859, a: 1}
+  swapSound: {fileID: 8300000, guid: e25cbe6ab735be1498ca37021f7b9b3d, type: 3}
+  swapBackSound: {fileID: 8300000, guid: 57ea5312b40d63048a32448babc2703d, type: 3}
+  popSound: {fileID: 8300000, guid: 516e3769910778840934d1f94de175f6, type: 3}
   score: 10

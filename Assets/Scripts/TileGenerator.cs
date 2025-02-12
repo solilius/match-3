@@ -126,6 +126,7 @@ public class TileGenerator : MonoBehaviour
             }
         }
 
+        if (tilesAround.Count == 0) return GetRandomFruitTile();
         string randomVariant = tilesAround.ElementAt(UnityEngine.Random.Range(0, tilesAround.Count));
         return _tileCatalog.GetTileVariant(randomVariant);
     }

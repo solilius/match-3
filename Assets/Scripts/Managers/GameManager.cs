@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
         
         Dictionary<GenLogic, float> procGenBoard = new Dictionary<GenLogic, float>
         {
-            { GenLogic.RandomPower, 0.05f },
-            { GenLogic.NoMatch, 0.65f },
+            { GenLogic.RandomPower, 0.15f },
+            { GenLogic.NoMatch, 0.55f },
             { GenLogic.Match2, 0.3f },
         };
         

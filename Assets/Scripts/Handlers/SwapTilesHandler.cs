@@ -31,7 +31,7 @@ public class SwapTilesHandler : MonoBehaviour
 
         Vector2 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (!_isDragging && Input.GetMouseButtonDown(0) && IsDraggable(currentPosition, out Vector2Int gridPosition))
+        if (!_isDragging && Input.GetMouseButtonDown(0) && IsDraggable(currentPosition, false, out Vector2Int gridPosition))
         {
             _isDragging = true;
             _startDragPosition = currentPosition;
@@ -50,7 +50,7 @@ public class SwapTilesHandler : MonoBehaviour
         Vector2 direction = GetDirection(_startDragPosition, currentPosition);
         Vector2 draggedPosition = new Vector2(_selectedTilePos.x + direction.x, _selectedTilePos.y + direction.y);
 
-        if (IsDraggable(draggedPosition, out Vector2Int draggedGridPosition))
+        if (IsDraggable(draggedPosition, true, out Vector2Int draggedGridPosition))
         {
             StartCoroutine(SwapTiles(draggedGridPosition, direction));
         }
@@ -97,12 +97,14 @@ public class SwapTilesHandler : MonoBehaviour
         return diff.y > 0 ? Vector2.up : Vector2.down;
     }
 
-    private bool IsDraggable(Vector2 position, out Vector2Int gridPosition)
+    private bool IsDraggable(Vector2 position, bool isGettingSwapped, out Vector2Int gridPosition)
     {
         int x = Mathf.FloorToInt(position.x);
         int y = Mathf.CeilToInt(position.y);
         gridPosition = new Vector2Int(x, y);
-        return _boardManager.Board.GetTile(gridPosition) != null;
+        TileSO tile = _boardManager.Board.GetTile(gridPosition)?.Data;
+        
+        return tile != null && (isGettingSwapped || tile.tileType == TileType.Fruit);
     }
 
     private bool IsValidDrag(Vector2 startPosition, Vector2 endPosition)

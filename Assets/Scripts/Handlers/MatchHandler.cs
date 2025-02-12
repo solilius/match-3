@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -28,8 +29,31 @@ public class MatchHandler : MonoBehaviour
 
     public void HandleMatches(HashSet<Vector2Int> matches)
     {
-        _scoreManager.AddScore(matches.Count * 10);
-        matches.ToList().ForEach(_boardManager.RemoveTile);
+        List<Vector2Int> matchQueue = new List<Vector2Int>(matches);
+
+        int counter = 0;
+        while (counter < matchQueue.Count)
+        {
+            Vector2Int match = matchQueue[counter];
+            counter++;
+            TileSO tile = _boardManager.Board.GetTile(match)?.Data;
+
+            switch (tile?.tileType)
+            {
+                case TileType.Fruit:
+                    _scoreManager.AddScore(((FruitSO)tile).score);
+                    break;
+                case TileType.Power:
+                    HashSet<Vector2Int> newMatches = GetPowerMatches(match);
+                    matchQueue.AddRange(newMatches);
+                    matchQueue = matchQueue.Distinct().ToList();
+                    break;
+                default:
+                    throw new Exception($"Invalid tile type: {tile?.tileType}");
+            }
+        }
+
+        matchQueue.ToList().ForEach(_boardManager.RemoveTile);
         StartCoroutine(_boardManager.UpdateBoard());
     }
 
@@ -52,7 +76,6 @@ public class MatchHandler : MonoBehaviour
         foreach (Vector2Int change in changes)
         {
             TileSO tile = _boardManager.Board.GetTile(change)?.Data;
-            if (tile?.tileType != TileType.Fruit) continue;
 
             matches.UnionWith(GetTileMatches(tile?.variant, change));
         }
@@ -85,7 +108,8 @@ public class MatchHandler : MonoBehaviour
             bool isBackwardVectorRunning = true;
             int index = 1;
 
-            while (isForwardVectorRunning || isBackwardVectorRunning)
+            while (index < Math.Min(_boardManager.Board.BoardHeight, _boardManager.Board.BoardWidth)
+                   && (isForwardVectorRunning || isBackwardVectorRunning))
             {
                 Vector2Int vectorModifier = vector * index;
                 Vector2Int checkPositionA = tilePosition + vectorModifier;
@@ -120,7 +144,7 @@ public class MatchHandler : MonoBehaviour
                 for (int y = 1; y <= powerUp.popRadius; y++)
                 {
                     Vector2Int checkPosition = position + vector * new Vector2Int(x, y);
-                    if (_boardManager.Board.GetTile(checkPosition)?.Data.tileType == TileType.Fruit)
+                    if (_boardManager.Board.GetTile(checkPosition) != null)
                     {
                         matches.Add(checkPosition);
                     }
@@ -133,6 +157,6 @@ public class MatchHandler : MonoBehaviour
 
     private bool IsMatchingTile(Vector2Int checkPosition, string tileVariant)
     {
-        return _boardManager.Board.GetTile(checkPosition)?.Data.variant == tileVariant;
+        return tileVariant != null && _boardManager.Board.GetTile(checkPosition)?.Data.variant == tileVariant;
     }
 }

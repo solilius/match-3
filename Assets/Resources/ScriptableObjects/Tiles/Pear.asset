@@ -16,4 +16,7 @@ MonoBehaviour:
   variant: Pear
   sprite: {fileID: 21300000, guid: 50dd2e8acaa7426438d693e39eb73026, type: 3}
   popEffectColor: {r: 0.3019758, g: 0.735849, b: 0.32607988, a: 1}
+  swapSound: {fileID: 8300000, guid: e25cbe6ab735be1498ca37021f7b9b3d, type: 3}
+  swapBackSound: {fileID: 8300000, guid: 57ea5312b40d63048a32448babc2703d, type: 3}
+  popSound: {fileID: 8300000, guid: 516e3769910778840934d1f94de175f6, type: 3}
   score: 10
