@@ -52,7 +52,6 @@ public class TileGenerator : MonoBehaviour
             cumulative += genLogic.Value;
             if (randomValue <= cumulative)
             {
-                if (genLogic.Key == GenLogic.RandomPower) Debug.Log($"{position} {genLogic.Key} {randomValue}");
                 return _genLogicFunctions[genLogic.Key](position);
             }
         }
