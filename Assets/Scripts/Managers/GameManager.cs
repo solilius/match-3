@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Caching.ClearCache();
+        
         tilesList.LoadAssetAsync().Completed += LoadAddressables;
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
     }
