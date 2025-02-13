@@ -13,17 +13,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Caching.ClearCache();
-        
-        tilesList.LoadAssetAsync().Completed += LoadAddressables;
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
+        tilesList.LoadAssetAsync().Completed += LoadAddressables;
     }
 
     void Start()
     {
         _boardManager = FindFirstObjectByType<BoardManager>();
         _tileGenerator = FindFirstObjectByType<TileGenerator>();
-        _tileCatalog = gameObject.AddComponent<TilesCatalog>();
     }
 
     private void LoadAddressables(AsyncOperationHandle<GameObject> handle)
@@ -44,17 +41,17 @@ public class GameManager : MonoBehaviour
         int size = 6;
         Dictionary<GenLogic, float> procGenTile = new Dictionary<GenLogic, float>
         {
-            { GenLogic.RandomPower, 0.05f },
+            { GenLogic.RandomPower, 0.02f },
             { GenLogic.Match3, 0.1f },
             { GenLogic.Match2, 0.2f },
-            { GenLogic.RandomFruit, 0.3f },
+            { GenLogic.RandomFruit, 0.33f },
             { GenLogic.NoMatch, 0.45f },
         };
 
         Dictionary<GenLogic, float> procGenBoard = new Dictionary<GenLogic, float>
         {
-            { GenLogic.RandomPower, 0.15f },
-            { GenLogic.NoMatch, 0.55f },
+            { GenLogic.RandomPower, 0.02f },
+            { GenLogic.NoMatch, 0.68f },
             { GenLogic.Match2, 0.3f },
         };
 

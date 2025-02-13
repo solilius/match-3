@@ -45,13 +45,14 @@ public class TileGenerator : MonoBehaviour
     {
         float randomValue = UnityEngine.Random.Range(0f, 1f);
         var cumulative = 0f;
-        var sortedDict  = (genMap ?? _tileGenMap).OrderBy(x => x.Value);
+        var sortedDict = (genMap ?? _tileGenMap).OrderBy(x => x.Value);
 
         foreach (var genLogic in sortedDict)
         {
             cumulative += genLogic.Value;
             if (randomValue <= cumulative)
             {
+                if (genLogic.Key == GenLogic.RandomPower) Debug.Log($"{position} {genLogic.Key} {randomValue}");
                 return _genLogicFunctions[genLogic.Key](position);
             }
         }
@@ -64,12 +65,12 @@ public class TileGenerator : MonoBehaviour
     {
         return _tileCatalog.GetRandomTile();
     }
-    
+
     private TileSO GetRandomFruitTile(Vector2Int position = new Vector2Int())
     {
         return _tileCatalog.GetRandomTile(TileType.Fruit);
     }
-    
+
     private TileSO GetRandomPowerTile(Vector2Int position = new Vector2Int())
     {
         return _tileCatalog.GetRandomTile(TileType.Power);
