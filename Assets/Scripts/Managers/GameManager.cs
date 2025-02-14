@@ -6,11 +6,16 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private AssetReferenceGameObject tilesList;
+    [SerializeField] private int scoreToPassLevel = 1000;
+    [SerializeField] private float scoreToPassLevelModifier = 1.5f;
 
     private BoardManager _boardManager;
     private TileGenerator _tileGenerator;
     private TilesCatalog _tileCatalog;
+    private ScoreManager _scoreManager;
 
+    private int _level = 1;
+    
     private void Awake()
     {
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
@@ -19,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        _scoreManager = FindFirstObjectByType<ScoreManager>();
         _boardManager = FindFirstObjectByType<BoardManager>();
         _tileGenerator = FindFirstObjectByType<TileGenerator>();
     }
@@ -58,5 +64,7 @@ public class GameManager : MonoBehaviour
         _tileCatalog.Initialize(tilesScriptableObjects);
         _tileGenerator.Initialize(_tileCatalog, procGenTile);
         _boardManager.Initialize(size, procGenBoard);
+
+        _scoreManager.StartLevel(Mathf.FloorToInt(scoreToPassLevel));
     }
 }
