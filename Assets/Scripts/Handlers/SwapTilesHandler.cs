@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SwapTilesHandler : MonoBehaviour
 {
+    public static event EventHandler OnSwapTiles;
+    
     [SerializeField] private float dragDistance = .5f;
     [SerializeField] private float swapDuration = .5f;
 
@@ -81,6 +84,7 @@ public class SwapTilesHandler : MonoBehaviour
         }
         else
         {
+            OnSwapTiles?.Invoke(this, EventArgs.Empty);
             _matchHandler.HandleMatches(matches);
         }
     }

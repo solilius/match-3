@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c941f60804b64a8cb6663dda0805076c, type: 3}
   m_Name: Bord Logic
   m_EditorClassIdentifier: 
-  procGenRules: []
+  procGenRules:
+  - GenLogic: 2
+    Probability: 0.02
+  - GenLogic: 3
+    Probability: 0.68
+  - GenLogic: 4
+    Probability: 0.3

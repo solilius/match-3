@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   procGenRules:
   - GenLogic: 2
-    Probability: 0
+    Probability: 0.02
   - GenLogic: 5
-    Probability: 0
+    Probability: 0.1
   - GenLogic: 4
-    Probability: 0
+    Probability: 0.2
   - GenLogic: 1
-    Probability: 0
+    Probability: 0.33
   - GenLogic: 3
-    Probability: 0
+    Probability: 0.45

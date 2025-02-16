@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectTileHandler : MonoBehaviour
 {
+    public static event EventHandler OnPowerUsed;
+
     [SerializeField] private float longPressThreshold = 0.5f;
     [SerializeField] private float pressedScale = 1.1f;
 
@@ -46,6 +49,7 @@ public class SelectTileHandler : MonoBehaviour
 
     private void HandlePowerTriggered(Vector2Int pressedTile)
     {
+        OnPowerUsed?.Invoke(this, EventArgs.Empty);
         HandleCanceledLongPress(pressedTile);
         HashSet<Vector2Int> matches = _matchHandler.GetPowerMatches(pressedTile);
         if (matches.Count > 0) _matchHandler.HandleMatches(matches);
