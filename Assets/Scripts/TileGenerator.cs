@@ -20,10 +20,10 @@ public class TileGenerator : MonoBehaviour
 
     private BoardManager _boardManager;
 
-    private Dictionary<GenLogic, float> _tileGenMap;
+    private List<ProcGenRule> _tileGenMap;
     private Dictionary<GenLogic, Func<Vector2Int, TileSO>> _genLogicFunctions;
 
-    public void Initialize(TilesCatalog catalog, Dictionary<GenLogic, float> tileGenMap)
+    public void Initialize(TilesCatalog catalog, List<ProcGenRule> tileGenMap)
     {
         _boardManager = GetComponent<BoardManager>();
         _matchHandler = GetComponent<MatchHandler>();
@@ -41,18 +41,18 @@ public class TileGenerator : MonoBehaviour
         };
     }
 
-    public TileSO GenerateTile(Vector2Int position, Dictionary<GenLogic, float> genMap = null)
+    public TileSO GenerateTile(Vector2Int position, List<ProcGenRule> genMap = null)
     {
         float randomValue = UnityEngine.Random.Range(0f, 1f);
         var cumulative = 0f;
-        var sortedDict = (genMap ?? _tileGenMap).OrderBy(x => x.Value);
+        var sortedDict = (genMap ?? _tileGenMap).OrderBy(x => x.Probability);
 
         foreach (var genLogic in sortedDict)
         {
-            cumulative += genLogic.Value;
+            cumulative += genLogic.Probability;
             if (randomValue <= cumulative)
             {
-                return _genLogicFunctions[genLogic.Key](position);
+                return _genLogicFunctions[genLogic.GenLogic](position);
             }
         }
 

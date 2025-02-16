@@ -5,7 +5,10 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private int boardSize= 6;
     [SerializeField] private AssetReferenceGameObject tilesList;
+    [SerializeField] private ProcGenMapSO procGenTile;
+    [SerializeField] private ProcGenMapSO procGenBoard;
     [SerializeField] private int scoreToPassLevel = 1000;
     [SerializeField] private float scoreToPassLevelModifier = 1.5f;
 
@@ -44,26 +47,10 @@ public class GameManager : MonoBehaviour
 
     private void Initialize(List<TileSO> tilesScriptableObjects)
     {
-        int size = 6;
-        Dictionary<GenLogic, float> procGenTile = new Dictionary<GenLogic, float>
-        {
-            { GenLogic.RandomPower, 0.02f },
-            { GenLogic.Match3, 0.1f },
-            { GenLogic.Match2, 0.2f },
-            { GenLogic.RandomFruit, 0.33f },
-            { GenLogic.NoMatch, 0.45f },
-        };
-
-        Dictionary<GenLogic, float> procGenBoard = new Dictionary<GenLogic, float>
-        {
-            { GenLogic.RandomPower, 0.02f },
-            { GenLogic.NoMatch, 0.68f },
-            { GenLogic.Match2, 0.3f },
-        };
-
+        
         _tileCatalog.Initialize(tilesScriptableObjects);
-        _tileGenerator.Initialize(_tileCatalog, procGenTile);
-        _boardManager.Initialize(size, procGenBoard);
+        _tileGenerator.Initialize(_tileCatalog, procGenTile.procGenRules);
+        _boardManager.Initialize(boardSize, procGenBoard.procGenRules);
 
         _scoreManager.StartLevel(Mathf.FloorToInt(scoreToPassLevel));
     }

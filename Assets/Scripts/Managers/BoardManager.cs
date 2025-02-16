@@ -33,7 +33,7 @@ public class BoardManager : MonoBehaviour
         _tileGenerator = GetComponent<TileGenerator>();
     }
 
-    public void Initialize(int size, Dictionary<GenLogic, float> procGenBoard)
+    public void Initialize(int size, List<ProcGenRule> procGenBoard)
     {
         Board = new Board(size, size);
 
