@@ -27,7 +27,7 @@ public partial class GameManager : MonoBehaviour
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
         tilesList.LoadAssetAsync().Completed += LoadAddressables;
         _moves = maxMoves;
-        _level = 1; //PlayerPrefs.GetInt("level", 1);
+        _level = PlayerPrefs.GetInt("level", 1);
     }
 
     void Start()
