@@ -19,7 +19,9 @@ public class PopupLevelFailed : MonoBehaviour, IPopup
     public void RetryClicked()
     {
         OnLevelRestClicked?.Invoke(this, EventArgs.Empty);
+        HidePopup();
     }
+    
     public void HidePopup()
     {
         gameObject.SetActive(false);

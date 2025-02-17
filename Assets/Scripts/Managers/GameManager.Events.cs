@@ -3,6 +3,7 @@ using System;
 public partial class GameManager
 {
     public static event EventHandler<int> OnMoveUsed;
+    public static event EventHandler<int> OnLevelUpdated;
 
     void OnEnable()
     {
@@ -11,6 +12,7 @@ public partial class GameManager
         ScoreManager.OnLevelCleared += LevelCleared;
         PopupLevelFailed.OnLevelRestClicked += ResetLevel;
         PopupLevelCompleted.OnNextLevelClicked += NextLevel;
+        PopupLevelCompleted.OnRetryClicked += ResetLevel;
     }
 
     void OnDisable()
@@ -20,6 +22,7 @@ public partial class GameManager
         ScoreManager.OnLevelCleared -= LevelCleared;
         PopupLevelFailed.OnLevelRestClicked -= ResetLevel;
         PopupLevelCompleted.OnNextLevelClicked -= NextLevel;
+        PopupLevelCompleted.OnRetryClicked -= ResetLevel;
     }
 
     private void MoveUsed(object sender, EventArgs e)
@@ -35,11 +38,13 @@ public partial class GameManager
         if (isCleared || _moves <= 0)
         {
             _popupManager.ShowPopup(isCleared ? PopupId.LevelComplete : PopupId.LevelFailed);
+            _boardManager.SetLevelEnded();
         }
     }
 
     private void LevelCleared(object that, EventArgs e)
     {
+        _boardManager.SetLevelEnded();
         _popupManager.ShowPopup(PopupId.LevelComplete);
     }
 
@@ -50,7 +55,7 @@ public partial class GameManager
 
     private void NextLevel(object that, EventArgs e)
     {
-        _level++;
+        LevelUp();
         StartLevel();
     }
 }

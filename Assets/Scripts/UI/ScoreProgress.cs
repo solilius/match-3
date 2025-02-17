@@ -9,22 +9,38 @@ public class ScoreProgress : MonoBehaviour
     [SerializeField] private List<Star> stars;
 
     private int _scoreToPassLevel;
+    private Coroutine _updateUICoroutine;
+    private int _score;
 
     public void Initialize(int scoreToPassLevel)
     {
-        slider.value = 0;
+        _score = 0;
+        slider.value = _score;
         _scoreToPassLevel = scoreToPassLevel;
         slider.maxValue = _scoreToPassLevel;
         stars.ForEach(star => star.ResetStar());
     }
 
-    public IEnumerator UpdateScore(int score)
+    public void UpdateScore(int score)
     {
-        while (slider.value < score)
+        _score = score < _scoreToPassLevel ? score : _scoreToPassLevel;
+
+        Debug.Log($"UpdateScore {score}");
+        if (_updateUICoroutine != null)
         {
-            slider.value += 1;
-            HandleStars(score);
-            yield return new WaitForSeconds(0.01f);
+            StopCoroutine(_updateUICoroutine);
+        }
+
+        _updateUICoroutine = StartCoroutine(UpdateUI());
+    }
+
+    private IEnumerator UpdateUI()
+    {
+        while (slider.value < _score) 
+        {
+            slider.value += 2;
+            HandleStars(Mathf.RoundToInt(slider.value));
+            yield return new WaitForSeconds(0.001f);
         }
     }
 

@@ -21,6 +21,6 @@ public class Star : MonoBehaviour
     public void ResetStar()
     {
         IsGained = false;
-        markedStarImage.transform.DOScale(0, 0);
+        markedStarImage.transform.localScale = Vector3.zero;
     }
 }

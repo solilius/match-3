@@ -19,6 +19,7 @@ public class MatchedTileEventArgs : EventArgs
 public class BoardManager : MonoBehaviour
 {
     public static event EventHandler<MatchedTileEventArgs> OnMatched;
+    public static event EventHandler OnReset;
     public Board Board { get; private set; }
 
     [SerializeField] private float moveDuration = 0.05f;
@@ -26,6 +27,8 @@ public class BoardManager : MonoBehaviour
 
     private TileGenerator _tileGenerator;
     private MatchHandler _matchHandler;
+
+    private bool _isLevelEnded;
 
     void Awake()
     {
@@ -35,7 +38,9 @@ public class BoardManager : MonoBehaviour
 
     public void Initialize(int size, List<ProcGenRule> procGenBoard)
     {
+        CleanBoard();
         Board = new Board(size, size);
+        _isLevelEnded = false;
 
         for (int y = 0; y < Board.BoardHeight; y++)
         {
@@ -54,7 +59,7 @@ public class BoardManager : MonoBehaviour
         tile.GetComponent<Tile>().Initialize(tileData, newTile.x, newTile.y);
         Board.BoardGrid[newTile.x, newTile.y] = new GameTile(tile.GetInstanceID(), tileData);
     }
-    
+
     public void RemoveTile(Vector2Int tilePosition)
     {
         int gameObjectId = Board.GetTile(tilePosition).GameObjectId;
@@ -67,7 +72,7 @@ public class BoardManager : MonoBehaviour
         HashSet<Vector2Int> changes = new HashSet<Vector2Int>();
 
         List<Vector2Int> holes = Board.GetLowestRowHoles();
-        while (holes.Count > 0)
+        while (holes.Count > 0 && !_isLevelEnded)
         {
             changes.UnionWith(holes);
             SpawnTiles(holes);
@@ -78,6 +83,11 @@ public class BoardManager : MonoBehaviour
 
         HashSet<Vector2Int> calculatedChangedPositions = CalculateChangedPositions(changes);
         _matchHandler.HandlePossibleMatches(calculatedChangedPositions);
+    }
+
+    public void SetLevelEnded()
+    {
+        _isLevelEnded = true;
     }
 
     private HashSet<Vector2Int> CalculateChangedPositions(HashSet<Vector2Int> changes)
@@ -145,5 +155,12 @@ public class BoardManager : MonoBehaviour
         }
 
         return counter;
+    }
+
+
+    private void CleanBoard()
+    {
+        if (Board == null) return;
+        OnReset?.Invoke(this, EventArgs.Empty);
     }
 }

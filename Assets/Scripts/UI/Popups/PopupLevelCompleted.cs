@@ -24,12 +24,15 @@ public class PopupLevelCompleted : MonoBehaviour, IPopup
     public void DisplayPopup()
     {
         gameObject.SetActive(true);
-        scoreText.text = _scoreManager.score.ToString();
+        stars.ForEach(star => star.ResetStar());
+        scoreText.text = $"Score: {_scoreManager.score}";
+
         StartCoroutine(UpdateStars());
     }
 
     public void RetryClicked()
     {
+        Debug.Log($"RetryClicked");
         OnRetryClicked?.Invoke(this, EventArgs.Empty);
         HidePopup();
     }
@@ -47,31 +50,18 @@ public class PopupLevelCompleted : MonoBehaviour, IPopup
 
     private IEnumerator UpdateStars()
     {
-        int score = 0;
+        int scorePerStar = _scoreManager.levelMaxScore / stars.Count;
+        int currentStarsValue = scorePerStar;
 
-        while (score <= _scoreManager.score)
-        {
-            for (int i = 0; i < stars.Count; i++)
-            {
-                if (!stars[i].IsGained && score >= (_scoreManager.levelMaxScore / stars.Count) * (i + 1))
-                {
-                    stars[i].GainStar();
-                }
-            }
-
-            yield return new WaitForSeconds(.07f);
-            score += 10;
-        }
-    }
-
-    private void HandleStars(int score)
-    {
         for (int i = 0; i < stars.Count; i++)
         {
-            if (!stars[i].IsGained && score >= (_scoreManager.levelMaxScore / stars.Count) * (i + 1))
+            if (_scoreManager.score >= currentStarsValue)
             {
                 stars[i].GainStar();
             }
+
+            currentStarsValue += scorePerStar;
+            yield return new WaitForSeconds(.5f);
         }
     }
 }

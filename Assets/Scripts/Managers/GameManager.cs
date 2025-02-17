@@ -27,7 +27,7 @@ public partial class GameManager : MonoBehaviour
         _tileCatalog = gameObject.AddComponent<TilesCatalog>();
         tilesList.LoadAssetAsync().Completed += LoadAddressables;
         _moves = maxMoves;
-        _level = 1;
+        _level = 1; //PlayerPrefs.GetInt("level", 1);
     }
 
     void Start()
@@ -55,14 +55,21 @@ public partial class GameManager : MonoBehaviour
     {
         _tileCatalog.Initialize(tilesScriptableObjects);
         _tileGenerator.Initialize(_tileCatalog, procGenTile.procGenRules);
-        _boardManager.Initialize(boardSize, procGenBoard.procGenRules);
         StartLevel();
     }
 
     private void StartLevel()
     {
+        _boardManager.Initialize(boardSize, procGenBoard.procGenRules);
+        OnLevelUpdated?.Invoke(this, _level);
         int scoreCompleteLevel = baseLevelScore + (_level * scoreLevelModifier);
         _scoreManager.StartLevel(Mathf.FloorToInt(scoreCompleteLevel));
-        OnMoveUsed?.Invoke(this, _moves);
+        OnMoveUsed?.Invoke(this, maxMoves);
+    }
+
+    private void LevelUp()
+    {
+        _level++;
+        PlayerPrefs.SetInt("level", _level);
     }
 }

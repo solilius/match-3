@@ -16,6 +16,7 @@ public class ScoreManager : MonoBehaviour
         score = 0;
         levelMaxScore = maxScore;
         scoreProgress.Initialize(levelMaxScore);
+        scoreText.UpdateTextScore(score);
     }
     
     public bool IsLevelCleared()
@@ -26,8 +27,8 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int scoreToAdd)
     {
         score += scoreToAdd;
-        StartCoroutine(scoreText.UpdateTextScore(score));
-        StartCoroutine(scoreProgress.UpdateScore(score));
+        scoreText.UpdateTextScore(score);
+        scoreProgress.UpdateScore(score);
 
         if (score >= levelMaxScore)
         {

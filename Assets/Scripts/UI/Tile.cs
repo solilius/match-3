@@ -32,6 +32,7 @@ public class Tile : MonoBehaviour
         TileEvents.OnUpdateTilePosition += MoveTile;
         TileEvents.OnPowerTilePressed += PowerTilePressed;
         BoardManager.OnMatched += Match;
+        BoardManager.OnReset += RemoveTile;
     }
 
     void OnDisable()
@@ -39,6 +40,7 @@ public class Tile : MonoBehaviour
         TileEvents.OnUpdateTilePosition -= MoveTile;
         TileEvents.OnPowerTilePressed -= PowerTilePressed;
         BoardManager.OnMatched -= Match;
+        BoardManager.OnReset -= RemoveTile;
     }
 
     public void Initialize(TileSO data, int x, int y)
@@ -51,6 +53,11 @@ public class Tile : MonoBehaviour
         SetEffectColor(data.popEffectColor);
     }
 
+    private void RemoveTile(object sender, System.EventArgs e)
+    {
+        Destroy(gameObject);
+    }
+    
     private void MoveTile(object sender, UpdateTilePositionEventArgs e)
     {
         if (e.GameObjectId != gameObject.GetInstanceID()) return;

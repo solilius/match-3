@@ -13,19 +13,25 @@ public class ScoreText : MonoBehaviour
         _scoreText = GetComponent<TMP_Text>();
     }
 
-    public IEnumerator UpdateTextScore(int newScore)
+
+    public void UpdateTextScore(int newScore)
+    {
+        StartCoroutine(UpdateUI(newScore));
+    }
+
+    private IEnumerator UpdateUI(int newScore)
     {
         if (newScore == 0)
         {
             _score = newScore;
-            _scoreText.text = _score.ToString();
+            _scoreText.text = $"Score: {_score}";
             yield return null;
         }
 
         while (_score < newScore)
         {
             _score += 1;
-            _scoreText.text = _score.ToString();
+            _scoreText.text = $"Score: {_score}";
             yield return new WaitForSeconds(0.01f);
         }
     }
