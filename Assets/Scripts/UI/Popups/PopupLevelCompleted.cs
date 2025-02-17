@@ -32,7 +32,6 @@ public class PopupLevelCompleted : MonoBehaviour, IPopup
 
     public void RetryClicked()
     {
-        Debug.Log($"RetryClicked");
         OnRetryClicked?.Invoke(this, EventArgs.Empty);
         HidePopup();
     }

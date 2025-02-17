@@ -25,7 +25,6 @@ public class ScoreProgress : MonoBehaviour
     {
         _score = score < _scoreToPassLevel ? score : _scoreToPassLevel;
 
-        Debug.Log($"UpdateScore {score}");
         if (_updateUICoroutine != null)
         {
             StopCoroutine(_updateUICoroutine);
