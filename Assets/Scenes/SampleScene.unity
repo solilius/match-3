@@ -4315,8 +4315,8 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   procGenTile: {fileID: 11400000, guid: f35dbaf7bbf92b440a728c0dd1c93282, type: 2}
   procGenBoard: {fileID: 11400000, guid: da7cc21ab840bfb4eb55cae6c0b0fa02, type: 2}
-  baseLevelScore: 1
-  scoreLevelModifier: 1
+  baseLevelScore: 500
+  scoreLevelModifier: 100
   maxMoves: 30
 --- !u!1 &1875970945
 GameObject:
