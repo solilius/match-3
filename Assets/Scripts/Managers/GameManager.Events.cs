@@ -27,6 +27,7 @@ public partial class GameManager
 
     private void MoveUsed(object sender, EventArgs e)
     {
+        
         _moves--;
         bool isCleared = _scoreManager.IsLevelCleared();
 
